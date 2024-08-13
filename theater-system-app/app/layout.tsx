@@ -1,7 +1,10 @@
-// 'use client';
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import { Metadata } from 'next';
+import {
+  TooltipProvider,
+} from "@/components/ui/tooltip"
 
+import './globals.css'
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,13 +17,17 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  
+
   return (
     <html lang="en">
       <UserProvider>
-      <body>
-        <main>{children}</main>
-      </body>
+        <body>
+          <main>
+            <TooltipProvider>
+              {children}
+            </TooltipProvider>
+          </main>
+        </body>
       </UserProvider>
     </html>
   )

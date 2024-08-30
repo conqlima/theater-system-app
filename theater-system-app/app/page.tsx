@@ -43,11 +43,11 @@ import { useState } from 'react';
 export default function Dashboard() {
 
   const items = [
-    { id: 1, Name: 'Apple', Status: 'draft', Price: 10.99, ImageURL: '/placeholder.svg', TotalSales: 123, CreatedAt: '2023-07-12 10:42 AM' },
-    { id: 2, Name: 'Carrot', Status: 'active', Price: 10.99, ImageURL: '/placeholder.svg', TotalSales: 789, CreatedAt: '2023-07-12 10:42 AM' },
-    { id: 3, Name: 'Banana', Status: 'archived', Price: 10.99, ImageURL: '/placeholder.svg', TotalSales: 456, CreatedAt: '2023-07-12 10:42 AM' },
-    { id: 4, Name: 'Broccoli', Status: 'archived', Price: 10.99, ImageURL: '/placeholder.svg', TotalSales: 234, CreatedAt: '2023-07-12 10:42 AM' },
-    { id: 5, Name: 'Chicken', Status: 'active', Price: 10.99, ImageURL: '/placeholder.svg', TotalSales: 98, CreatedAt: '2023-07-12 10:42 AM' },
+    { id: 1, Name: 'Apple', Status: 'draft', Description: 'jhdfdjfhdj idufidjh', ImageURL: '/placeholder.svg', CreatedAt: '2023-07-12 10:42 AM' },
+    { id: 2, Name: 'Carrot', Status: 'active', Description: 'jhdfdjfhdj idufidjh', ImageURL: '/placeholder.svg', CreatedAt: '2023-07-12 10:42 AM' },
+    { id: 3, Name: 'Banana', Status: 'archived', Description: 'jhdfdjfhdj idufidjh', ImageURL: '/placeholder.svg', CreatedAt: '2023-07-12 10:42 AM' },
+    { id: 4, Name: 'Broccoli', Status: 'archived', Description: 'jhdfdjfhdj idufidjh', ImageURL: '/placeholder.svg', CreatedAt: '2023-07-12 10:42 AM' },
+    { id: 5, Name: 'Chicken', Status: 'active', Description: 'jhdfdjfhdj idufidjh', ImageURL: '/placeholder.svg', CreatedAt: '2023-07-12 10:42 AM' },
   ];
 
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -106,10 +106,7 @@ export default function Dashboard() {
                     <TableHead>Name</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="hidden md:table-cell">
-                      Price
-                    </TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Total Sales
+                      Description
                     </TableHead>
                     <TableHead className="hidden md:table-cell">
                       Created at
@@ -138,10 +135,7 @@ export default function Dashboard() {
                         <Badge variant="outline">{item.Status}</Badge>
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
-                        {item.Price}
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {item.TotalSales}
+                        {item.Description}
                       </TableCell>
                       <TableCell className="hidden md:table-cell">
                         {item.CreatedAt}

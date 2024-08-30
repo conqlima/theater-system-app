@@ -1,4 +1,4 @@
-import Image from "next/image"
+'use client'
 import {
   Upload,
 } from "lucide-react"
@@ -21,8 +21,13 @@ import {
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import Link from 'next/link'
+import { useState } from 'react';
 
 export default function Dashboard() {
+
+  const [text, setText] = useState('');
+  const maxLength = 100;
+
   return (
     <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
       <div className="grid flex-1 auto-rows-max gap-4">
@@ -60,7 +65,13 @@ export default function Dashboard() {
                       id="description"
                       defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl nec ultricies ultricies, nunc nisl ultricies nunc, nec ultricies nunc nisl nec nunc."
                       className="min-h-32"
+                      value={text}
+                      onChange={(event: any) => {
+                        setText(event.target.value);
+                      }}
+                      maxLength={maxLength}
                     />
+                    <span>{text.length}  / {maxLength} characters</span>
                   </div>
                 </div>
               </CardContent>

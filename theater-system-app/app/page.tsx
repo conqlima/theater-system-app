@@ -83,7 +83,7 @@ export default function Dashboard() {
             <Button size="sm" className="h-8 gap-1" asChild>
               <div>
                 <PlusCircle className="h-3.5 w-3.5" />
-                <Link href={"/addNewItem"}>Nova Peça</Link>
+                <Link href={"/item"}>Nova Peça</Link>
               </div>
             </Button>
           </div>

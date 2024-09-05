@@ -9,6 +9,7 @@ import {
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { MapPinned, CalendarClock } from "lucide-react"
 
 export default function LandingPage() {
     return (
@@ -31,70 +32,43 @@ export default function LandingPage() {
                             >
                                 <CardHeader className="pb-3">
                                     <CardTitle>Noviça Rebelde</CardTitle>
+                                    <CardDescription className="max-w-lg text-balance leading-relaxed">
+                                        Ao contrário do que se acredita, Lorem Ipsum não é simplesmente um texto randômico. Com mais de 2000 anos, suas raízes podem ser encontradas em uma obra de literatura latina clássica datada de 45 AC. Richard McClintock, um professor de latim do Hampden-Sydney College na Virginia, pesquisou uma das mais obscuras palavras em latim, consectetur, oriunda de uma passagem de Lorem Ipsum, e, procurando por entre citações da palavra na literatura clássica, descobriu a sua indubitável origem. Lorem Ipsum vem das seções 1.10.32 e 1.10.33 do "de Finibus Bonorum et Malorum" (Os Extremos do Bem e do Mal), de Cícero, escrito em 45 AC. Este livro é um tratado de teoria da ética muito popular na época da Renascença. A primeira linha de Lorem Ipsum, "Lorem Ipsum dolor sit amet..." vem de uma linha na seção 1.10.32.
+                                    </CardDescription>
                                 </CardHeader>
                                 <CardContent className="p-6 text-sm">
+                                    <Separator className="my-2" />
                                     <div className="grid gap-3">
-                                        <div className="font-semibold">Localização</div>
+                                        <div className="font-semibold flex items-center gap-1">
+                                            <MapPinned />
+                                            Localização
+                                        </div>
                                         <ul className="grid gap-3">
                                             <li className="flex items-center justify-between">
                                                 <span className="text-muted-foreground">
-                                                    Glimmer Lamps x <span>2</span>
+                                                    Teatro Riachuelo, Cinelandia, Rio de Janeiro, Rio de Janeiro
                                                 </span>
-                                                <span>$250.00</span>
-                                            </li>
-                                            <li className="flex items-center justify-between">
-                                                <span className="text-muted-foreground">
-                                                    Aqua Filters x <span>1</span>
-                                                </span>
-                                                <span>$49.00</span>
-                                            </li>
-                                        </ul>
-                                        <Separator className="my-2" />
-                                        <ul className="grid gap-3">
-                                            <li className="flex items-center justify-between">
-                                                <span className="text-muted-foreground">Subtotal</span>
-                                                <span>$299.00</span>
-                                            </li>
-                                            <li className="flex items-center justify-between">
-                                                <span className="text-muted-foreground">Shipping</span>
-                                                <span>$5.00</span>
-                                            </li>
-                                            <li className="flex items-center justify-between">
-                                                <span className="text-muted-foreground">Tax</span>
-                                                <span>$25.00</span>
-                                            </li>
-                                            <li className="flex items-center justify-between font-semibold">
-                                                <span className="text-muted-foreground">Total</span>
-                                                <span>$329.00</span>
                                             </li>
                                         </ul>
                                     </div>
                                     <Separator className="my-4" />
-                                    <div className="grid grid-cols-3 gap-4">
-                                        <div className="grid gap-3">
-                                            <div className="font-semibold">Programação</div>
-                                            <address className="grid gap-0.5 not-italic text-muted-foreground">
-                                                <span>Liam Johnson</span>
-                                                <span>1234 Main St.</span>
-                                                <span>Anytown, CA 12345</span>
-                                            </address>
+                                    <div className="grid gap-3">
+                                        <div className="font-semibold flex items-center gap-1">
+                                            <CalendarClock />
+                                            Horários
                                         </div>
-                                        <div className="grid auto-rows-max gap-3">
-                                            <div className="font-semibold">Billing Information</div>
-                                            <div className="text-muted-foreground">
-                                                Same as shipping address
-                                            </div>
-                                        </div>
-                                        <div className="grid auto-rows-max gap-3">
-                                            <div className="font-semibold">Billing Information</div>
-                                            <div className="text-muted-foreground">
-                                                Same as shipping address
-                                            </div>
-                                        </div>
+                                        <ul className="grid gap-3">
+                                            <li className="flex items-center justify-between">
+                                                <span className="text-muted-foreground">
+                                                    Toda sexta, sábado e domingo às 18h
+                                                </span>
+                                            </li>
+                                        </ul>
                                     </div>
+                                    <Separator className="my-4" />
                                 </CardContent>
                                 <CardFooter>
-                                    <Button>Create New Order</Button>
+                                    <Button>Adquirir Ingresso Amigo</Button>
                                 </CardFooter>
                             </Card>
                         </div>

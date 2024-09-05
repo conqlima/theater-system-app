@@ -1,3 +1,5 @@
+"use client"
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -8,8 +10,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 export function Profile() {
+    const { user } = useUser();
     return (
         <div className="relative ml-auto mt-auto flex-1 md:grow-0">
             <DropdownMenu>
@@ -34,7 +38,7 @@ export function Profile() {
                     <DropdownMenuItem>Settings</DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                        <a href="/api/auth/logout">Logout</a>
+                        { user ? <a href="/api/auth/logout">Logout</a> : <a href="/api/auth/login">Login</a> }
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

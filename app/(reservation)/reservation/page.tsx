@@ -2,19 +2,16 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
-import { CalendarIcon, CalendarDays } from "lucide-react"
+import { CalendarIcon, CalendarDays, Clock } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from 'zod'
-
 import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calendar"
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
-    FormLabel,
     FormMessage,
 } from "@/components/ui/form"
 import {
@@ -22,7 +19,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-
+import { toast } from "@/components/hooks/use-toast"
 import {
     Card,
     CardContent,
@@ -31,6 +28,13 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -38,15 +42,33 @@ import { MapPinned, CalendarClock } from "lucide-react"
 
 const FormSchema = z.object({
     data: z.date({
-        required_error: "A date of birth is required.",
+        required_error: "Escolha uma data",
     }),
+    hora: z.string({
+        required_error: "Escolha um horário"
+    })
 })
+
+const availablesDates = [new Date(2024, 8, 11).toDateString(), new Date(2024, 8, 12).toDateString(), new Date(2024, 8, 13).toDateString()]
 
 export default function ReservationPage() {
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
     })
+
+    const dataValue = form.watch('data')
+
+    function onSubmit(data: z.infer<typeof FormSchema>) {
+        toast({
+            title: "You submitted the following values:",
+            description: (
+                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+                    <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+                </pre>
+            ),
+        })
+    }
 
     return (
         <>
@@ -67,7 +89,7 @@ export default function ReservationPage() {
                                 className="sm:col-span-3" x-chunk="dashboard-05-chunk-0"
                             >
                                 <Form {...form}>
-                                    <form onSubmit={form.handleSubmit(() => { })} className="space-y-8">
+                                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                                         <CardHeader className="pb-3">
                                             <CardTitle>Noviça Rebelde</CardTitle>
                                             <CardDescription className="max-w-lg text-balance leading-relaxed">
@@ -139,8 +161,8 @@ export default function ReservationPage() {
                                                                         mode="single"
                                                                         selected={field.value}
                                                                         onSelect={field.onChange}
-                                                                        disabled={(date) =>
-                                                                            date > new Date() || date < new Date("1900-01-01")
+                                                                        disabled={(date: Date) =>
+                                                                            !availablesDates.includes(date.toDateString())
                                                                         }
                                                                         initialFocus
                                                                     />
@@ -151,9 +173,51 @@ export default function ReservationPage() {
                                                     )}
                                                 />
                                             </div>
+                                            <div className="grid gap-3 my-4">
+                                                <div className="font-semibold flex items-center gap-1">
+                                                    <Clock />
+                                                    Horários Disponíveis
+                                                </div>
+
+                                                <FormField
+                                                    control={form.control}
+                                                    name="hora"
+                                                    render={({ field }) => (
+                                                        <FormItem className={cn(
+                                                            "flex flex-col w-[240px] text-left font-normal",
+                                                            !field.value && "text-muted-foreground"
+                                                        )}>
+                                                            <Select
+                                                                onValueChange={field.onChange}
+                                                                defaultValue={field.value}
+                                                                disabled={!dataValue}
+                                                            >
+                                                                <SelectTrigger
+                                                                    id="hora"
+                                                                >
+                                                                    <SelectValue placeholder="escolha um horário" />
+                                                                </SelectTrigger>
+                                                                <SelectContent>
+                                                                    <SelectItem value="13:30">
+                                                                        13:30
+                                                                    </SelectItem>
+                                                                    <SelectItem value="14:30">
+                                                                        14:30
+                                                                    </SelectItem>
+                                                                    <SelectItem value="19:00">
+                                                                        19:00
+                                                                    </SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                            <Separator className="my-4" />
                                         </CardContent>
                                         <CardFooter>
-                                        <Button type="submit">Adquirir Ingresso Amigo</Button>
+                                            <Button type="submit">Adquirir Ingresso Amigo</Button>
                                         </CardFooter>
                                     </form>
                                 </Form>

@@ -1,5 +1,6 @@
-import { Metadata } from 'next';
-import { UserProvider } from '@auth0/nextjs-auth0/client';
+import { Metadata } from 'next'
+import { UserProvider } from '@auth0/nextjs-auth0/client'
+import { Toaster } from "@/components/ui/toaster"
 import { Profile } from "./components/profile"
 import './globals.css'
 
@@ -20,7 +21,10 @@ export default function RootLayout({
                     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:border-0 sm:bg-transparent sm:px-6">
                         <Profile />
                     </header>
-                    {children}
+                    <main>
+                        {children}
+                    </main>
+                    <Toaster />
                 </UserProvider>
             </body>
         </html>

@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
+import { ptBR } from "date-fns/locale"
 import { CalendarIcon, CalendarDays, Clock } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from 'zod'
@@ -33,12 +34,12 @@ import {
     SelectContent,
     SelectItem,
     SelectTrigger,
-    SelectValue,
 } from "@/components/ui/select"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { MapPinned, CalendarClock } from "lucide-react"
+import { useState } from 'react'
 
 const FormSchema = z.object({
     data: z.date({
@@ -49,15 +50,61 @@ const FormSchema = z.object({
     })
 })
 
-const availablesDates = [new Date(2024, 8, 11).toDateString(), new Date(2024, 8, 12).toDateString(), new Date(2024, 8, 13).toDateString()]
+const reservations = [
+    "2024-09-11T16:30:00.000-03:00",
+    "2024-09-11T19:30:00.000-03:00",
+    "2024-09-12T17:30:00.000-03:00",
+    "2024-09-13T22:00:00.000-03:00",
+    "2024-09-14T12:00:00.000-03:00",
+]
+
+function getDatePart(isoString: string) {
+    return isoString.split('T')[0]; // Splits the string and returns the date part
+}
+
+function getHourAndMinutePart(isoString: string) {
+    return isoString.split('T')[1].substring(0, 5); // Splits the string and returns the hour and minute part
+}
+
+function appendToDict(dict: { [key: string]: string[] }, key: string, value: string): void {
+    if (dict[key]) {
+        dict[key].push(value);
+    } else {
+        dict[key] = [value];
+    }
+}
+
+function createDateTimeDict(isoDates: string[]) {
+    const dateTimeDict: { [key: string]: string[] } = {}
+
+    isoDates.forEach((isoString) => {
+        const datePart = getDatePart(isoString);
+        const timePart = getHourAndMinutePart(isoString);
+        appendToDict(dateTimeDict, datePart, timePart)
+    })
+
+    return dateTimeDict;
+}
+
+const dateTimeDict = createDateTimeDict(reservations);
+const availableDates = Object.keys(dateTimeDict);
 
 export default function ReservationPage() {
+
+    const [selectedDate, setSelectedDate] = useState<string | undefined>(undefined);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
     })
 
-    const dataValue = form.watch('data')
+    const availableTimes = selectedDate ? dateTimeDict[selectedDate] : []
+
+    const handleReset = () => {
+        form.resetField('hora')
+        console.log("handleReset foi chamado")
+    }
+
+    console.log(form.getValues())
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
         toast({
@@ -148,7 +195,7 @@ export default function ReservationPage() {
                                                                             )}
                                                                         >
                                                                             {field.value ? (
-                                                                                format(field.value, "PPP")
+                                                                                format(field.value, "PPP", { locale: ptBR })
                                                                             ) : (
                                                                                 <span>escolha uma data</span>
                                                                             )}
@@ -158,11 +205,17 @@ export default function ReservationPage() {
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="w-auto p-0" align="start">
                                                                     <Calendar
+                                                                        locale={ptBR}
                                                                         mode="single"
                                                                         selected={field.value}
-                                                                        onSelect={field.onChange}
+                                                                        onSelect={(date: Date | undefined) => {
+                                                                            field.onChange(date)
+                                                                            const datePart = date ? getDatePart(date.toISOString()) : undefined
+                                                                            setSelectedDate(datePart)
+                                                                            handleReset()
+                                                                        }}
                                                                         disabled={(date: Date) =>
-                                                                            !availablesDates.includes(date.toDateString())
+                                                                            !availableDates.includes(getDatePart(date.toISOString()))
                                                                         }
                                                                         initialFocus
                                                                     />
@@ -190,23 +243,23 @@ export default function ReservationPage() {
                                                             <Select
                                                                 onValueChange={field.onChange}
                                                                 defaultValue={field.value}
-                                                                disabled={!dataValue}
+                                                                disabled={!selectedDate}
                                                             >
                                                                 <SelectTrigger
                                                                     id="hora"
                                                                 >
-                                                                    <SelectValue placeholder="escolha um horário" />
+                                                                    {field.value ? (
+                                                                        field.value
+                                                                    ) : (
+                                                                        <span>escolha uma um horário</span>
+                                                                    )}
                                                                 </SelectTrigger>
                                                                 <SelectContent>
-                                                                    <SelectItem value="13:30">
-                                                                        13:30
-                                                                    </SelectItem>
-                                                                    <SelectItem value="14:30">
-                                                                        14:30
-                                                                    </SelectItem>
-                                                                    <SelectItem value="19:00">
-                                                                        19:00
-                                                                    </SelectItem>
+                                                                    {availableTimes.map(item => (
+                                                                        <SelectItem value={item} key={item}>
+                                                                            {item}
+                                                                        </SelectItem>
+                                                                    ))}
                                                                 </SelectContent>
                                                             </Select>
                                                             <FormMessage />

@@ -59,11 +59,11 @@ const reservations = [
 ]
 
 function getDatePart(isoString: string) {
-    return isoString.split('T')[0]; // Splits the string and returns the date part
+    return isoString.split('T')[0];
 }
 
 function getHourAndMinutePart(isoString: string) {
-    return isoString.split('T')[1].substring(0, 5); // Splits the string and returns the hour and minute part
+    return isoString.split('T')[1].substring(0, 5);
 }
 
 function appendToDict(dict: { [key: string]: string[] }, key: string, value: string): void {
@@ -101,10 +101,7 @@ export default function ReservationPage() {
 
     const handleReset = () => {
         form.resetField('hora')
-        console.log("handleReset foi chamado")
     }
-
-    console.log(form.getValues())
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
         toast({

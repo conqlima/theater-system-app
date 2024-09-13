@@ -7,6 +7,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import {
@@ -24,12 +25,40 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import Link from 'next/link'
-import { useEffect } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { cn } from "@/lib/utils"
+import { Calendar } from "@/components/ui/calendar"
+import { CalendarIcon, PlusCircle } from "lucide-react"
+import { format } from "date-fns"
+import { ptBR } from "date-fns/locale"
+import { HorariosReserva, columns } from "./columns"
+import { DataTable } from "@/components/ui/data-table"
+import { useState } from "react"
+import { ScrollArea } from "@/components/ui/scroll-area"
+
+function getData(): HorariosReserva[] {
+  return [
+    {
+      dataExibicao: "22/11/2024",
+      horaExibicao: "19:30",
+      dataHora: new Date().toISOString()
+    },
+  ]
+}
+
+function getDatePart(isoString: string | undefined) {
+  return isoString ? isoString.split('T')[0] : '';
+}
 
 const FormSchema = z.object({
   name: z
@@ -49,33 +78,34 @@ const FormSchema = z.object({
   image: z
     .any() // Start with `any()` since files are non-standard types
     .refine((files) => files && files.length > 0, {
-      message: 'Image file is required', // Ensure a file is selected
+      message: 'Image file is required',
     })
-    // .refine((files) => files[0]?.type.startsWith('image/'), {
-    //   message: 'Only image files are allowed', // Check that the file is an image
-    // })
     .refine((files) => files?.size < (5 * 1024 * 1024), {
-      message: 'File size must be less than 5MB', // Check that the file size is below the limit
-    }),
+      message: 'File size must be less than 5MB',
+    })
 })
 
-export default function Item({ params }: { params: { id?: string[] } }) {
+
+export default function ItemPage({ params }: { params: { id?: string[] } }) {
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema)
   })
 
   const { id } = params;
-
   if (id && id.length > 0) {
-    useEffect(() => {
-      form.setValue('name', id[0]);
-      form.setValue('description', "teste teste");
-    }, [form.setValue]);
+    form.setValue('name', id[0]);
+    form.setValue('description', "teste teste");
   }
 
+  const [horarios, setHorarios] = useState<HorariosReserva[]>(getData())
+  const [data, setData] = useState<Date>()
+  const [hora, setHora] = useState<string>('')
+
+  const isButtonDisabled: boolean = data === undefined || hora === '';
+
   return (
-    <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+    <div className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(() => { })}>
           <div className="grid flex-1 auto-rows-max gap-4">
@@ -134,42 +164,89 @@ export default function Item({ params }: { params: { id?: string[] } }) {
                     </div>
                   </CardContent>
                 </Card>
-                <Card
-                  className="overflow-hidden" x-chunk="dashboard-07-chunk-4"
-                >
-                  <CardHeader>
-                    <CardTitle>Product Images</CardTitle>
-                    <CardDescription>
-                      Lipsum dolor sit amet, consectetur adipiscing elit
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-2">
-                      <div className="grid grid-cols-3 gap-2">
-                        <FormField
-                          control={form.control}
-                          name="image"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>File</FormLabel>
-                              <FormControl>
-                                <div>
-                                  <Input
-                                    id="file"
-                                    type="file"
-                                    accept="image/*"
-                                    className="w-full"
-                                    {...field}
-                                  />
-                                </div>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )} />
+                <div className="grid grid-cols-2 gap-2">
+                  <Card x-chunk="dashboard-07-chunk-0">
+                    <CardHeader>
+                      <CardTitle>Horários</CardTitle>
+                      <CardDescription>
+                        Cadastre as datas e horários para essa peça
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid gap-6">
+                        <div className="grid gap-3">
+                        <Label htmlFor="data" >Data</Label>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                name="data"
+                                variant={"outline"}
+                                className={cn(
+                                  "w-[240px] pl-3 text-left font-normal",
+                                  !data && "text-muted-foreground"
+                                )}
+                              >
+                                {data ? (
+                                  format(data, "PPP", { locale: ptBR })
+                                ) : (
+                                  <span>escolha uma data</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                              <Calendar
+                                locale={ptBR}
+                                mode="single"
+                                selected={data}
+                                onSelect={setData}
+                                disabled={(date: Date) =>
+                                  date < new Date()
+                                }
+                                initialFocus
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                        <div className="grid gap-3 text-black">
+                          <Label htmlFor="hora">Hora</Label>
+                          <Input
+                            name="hora"
+                            value={hora}
+                            onChange={(event) => setHora(event.target.value)}
+                            type="time"
+                            step="60"
+                            className="w-[240px] justify-center"
+                          />
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                    <CardFooter className="justify-center border-t p-4">
+                      <Button
+                        type="button"
+                        onClick={() => setHorarios([...horarios, { dataExibicao: data?.toLocaleDateString(), horaExibicao: hora, dataHora: new Date().toISOString() }])}
+                        disabled={isButtonDisabled}
+                        size="sm"
+                        variant="outline"
+                        className="gap-1">
+                        <PlusCircle className="h-3.5 w-3.5" />
+                        Adicionar Horário
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                  <Card x-chunk="dashboard-07-chunk-0">
+                    <CardHeader>
+                      <CardDescription>
+                        Datas e horários cadastrados
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ScrollArea className="h-72 w-68 rounded-md border">
+                        <DataTable columns={columns} data={horarios} />
+                      </ScrollArea>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
               <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
                 <Card x-chunk="dashboard-07-chunk-3">
@@ -204,11 +281,54 @@ export default function Item({ params }: { params: { id?: string[] } }) {
                     </div>
                   </CardContent>
                 </Card>
+                <Card
+                  className="overflow-hidden" x-chunk="dashboard-07-chunk-4"
+                >
+                  <CardHeader>
+                    <CardTitle>Product Images</CardTitle>
+                    <CardDescription>
+                      Lipsum dolor sit amet, consectetur adipiscing elit
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-2">
+                      <div className="grid grid-cols-3 gap-2">
+                        <FormField
+                          control={form.control}
+                          name="image"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>File</FormLabel>
+                              <FormControl className="w-[240px]">
+                                <div>
+                                  <Input
+                                    id="file"
+                                    type="file"
+                                    accept="image/*"
+                                    {...field}
+                                  />
+                                </div>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )} />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="hidden items-center gap-2 md:ml-auto md:flex">
+                <Button variant="outline" size="sm" asChild>
+                  <Link href="/dashboard">Discard</Link>
+                </Button>
+                <Button type="submit" size="sm">Save</Button>
               </div>
             </div>
           </div>
         </form>
       </Form>
-    </main>
+    </div>
   )
 }

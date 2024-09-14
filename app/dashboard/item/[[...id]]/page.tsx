@@ -41,24 +41,12 @@ import { Calendar } from "@/components/ui/calendar"
 import { CalendarIcon, PlusCircle } from "lucide-react"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
-import { HorariosReserva, columns } from "./columns"
+import { columns } from "./columns"
 import { DataTable } from "@/components/ui/data-table"
 import { useState } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
-
-function getData(): HorariosReserva[] {
-  return [
-    {
-      dataExibicao: "22/11/2024",
-      horaExibicao: "19:30",
-      dataHora: new Date().toISOString()
-    },
-  ]
-}
-
-function getDatePart(isoString: string | undefined) {
-  return isoString ? isoString.split('T')[0] : '';
-}
+import { HorariosReserva } from "@/app/domain/horariosReserva"
+import { UUID } from "crypto"
 
 const FormSchema = z.object({
   name: z
@@ -86,6 +74,8 @@ const FormSchema = z.object({
 })
 
 
+let contador = 1
+
 export default function ItemPage({ params }: { params: { id?: string[] } }) {
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -98,7 +88,7 @@ export default function ItemPage({ params }: { params: { id?: string[] } }) {
     form.setValue('description', "teste teste");
   }
 
-  const [horarios, setHorarios] = useState<HorariosReserva[]>(getData())
+  const [horarios, setHorarios] = useState<HorariosReserva[]>([])
   const [data, setData] = useState<Date>()
   const [hora, setHora] = useState<string>('')
 
@@ -224,7 +214,7 @@ export default function ItemPage({ params }: { params: { id?: string[] } }) {
                     <CardFooter className="justify-center border-t p-4">
                       <Button
                         type="button"
-                        onClick={() => setHorarios([...horarios, { dataExibicao: data?.toLocaleDateString(), horaExibicao: hora, dataHora: new Date().toISOString() }])}
+                        onClick={() => setHorarios([...horarios, { data: data ? data.toLocaleDateString() : '', hora: hora, id: contador++ }])}
                         disabled={isButtonDisabled}
                         size="sm"
                         variant="outline"

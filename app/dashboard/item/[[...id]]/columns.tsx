@@ -25,9 +25,7 @@ export const columns: ColumnDef<HorariosReserva>[] = [
   },
   {
     id: "actions",
-    cell: ({ row, table }) => {
-      const dataHora = row.original
- 
+    cell: ({ row }) => { 
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

@@ -30,6 +30,21 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import Link from 'next/link'
@@ -38,15 +53,14 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calendar"
-import { CalendarIcon, PlusCircle } from "lucide-react"
+import { CalendarIcon, PlusCircle, MoreHorizontal } from "lucide-react"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { columns } from "./columns"
-import { DataTable } from "@/components/ui/data-table"
 import { useState } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { HorariosReserva } from "@/app/domain/horariosReserva"
-import { UUID } from "crypto"
+import { v4 as uuid } from 'uuid'
 
 const FormSchema = z.object({
   name: z
@@ -74,8 +88,6 @@ const FormSchema = z.object({
 })
 
 
-let contador = 1
-
 export default function ItemPage({ params }: { params: { id?: string[] } }) {
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -93,6 +105,15 @@ export default function ItemPage({ params }: { params: { id?: string[] } }) {
   const [hora, setHora] = useState<string>('')
 
   const isButtonDisabled: boolean = data === undefined || hora === '';
+
+  const addItem = () => {
+    setHorarios([...horarios, { data: data ? data.toLocaleDateString() : '', hora: hora, id: uuid() }])
+  }
+
+  const removeItem = (id: string) => {
+    const updatedItems = horarios.filter((item) => item.id !== id)
+    setHorarios(updatedItems)
+  }
 
   return (
     <div className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
@@ -165,7 +186,7 @@ export default function ItemPage({ params }: { params: { id?: string[] } }) {
                     <CardContent>
                       <div className="grid gap-6">
                         <div className="grid gap-3">
-                        <Label htmlFor="data" >Data</Label>
+                          <Label htmlFor="data" >Data</Label>
                           <Popover>
                             <PopoverTrigger asChild>
                               <Button
@@ -214,7 +235,7 @@ export default function ItemPage({ params }: { params: { id?: string[] } }) {
                     <CardFooter className="justify-center border-t p-4">
                       <Button
                         type="button"
-                        onClick={() => setHorarios([...horarios, { data: data ? data.toLocaleDateString() : '', hora: hora, id: contador++ }])}
+                        onClick={() => addItem()}
                         disabled={isButtonDisabled}
                         size="sm"
                         variant="outline"
@@ -231,8 +252,57 @@ export default function ItemPage({ params }: { params: { id?: string[] } }) {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <ScrollArea className="h-72 w-68 rounded-md border">
-                        <DataTable columns={columns} data={horarios} />
+                      <ScrollArea className="h-72 w-71 rounded-md border">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Data</TableHead>
+                              <TableHead>Horário</TableHead>
+                              <TableHead>
+                                <span className="sr-only">Actions</span>
+                              </TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {horarios.length ? (
+                              horarios.map(item => (
+                                <TableRow key={item.id}>
+                                  <TableCell className="md:table-cell">
+                                    {item.data}
+                                  </TableCell>
+                                  <TableCell className="md:table-cell">
+                                    {item.hora}
+                                  </TableCell>
+                                  <TableCell>
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <Button
+                                          aria-haspopup="true"
+                                          size="icon"
+                                          variant="ghost"
+                                        >
+                                          <MoreHorizontal className="h-4 w-4" />
+                                          <span className="sr-only">Toggle menu</span>
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end">
+                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                        <DropdownMenuItem onClick={() => removeItem(item.id)} >
+                                          Delete
+                                        </DropdownMenuItem>
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  </TableCell>
+                                </TableRow>
+                              ))) : (
+                              <TableRow>
+                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                  No results.
+                                </TableCell>
+                              </TableRow>)
+                            }
+                          </TableBody>
+                        </Table>
                       </ScrollArea>
                     </CardContent>
                   </Card>
@@ -295,7 +365,7 @@ export default function ItemPage({ params }: { params: { id?: string[] } }) {
                                     id="file"
                                     type="file"
                                     accept="image/*"
-                                    {...field}
+                                    onChange={field.onChange}
                                   />
                                 </div>
                               </FormControl>

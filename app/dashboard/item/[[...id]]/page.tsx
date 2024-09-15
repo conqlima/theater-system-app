@@ -74,8 +74,13 @@ const FormSchema = z.object({
       message: "Description must not be longer than 1000 characters"
     }),
   status: z
-    .string({
+    .string({ 
       required_error: "Please select an status to display."
+    }),
+  image: z
+    .any()
+    .refine((files) => files && files.length > 0, {
+      message: 'Image file is required',
     })
 })
 

@@ -76,17 +76,8 @@ const FormSchema = z.object({
   status: z
     .string({
       required_error: "Please select an status to display."
-    }),
-  image: z
-    .any() // Start with `any()` since files are non-standard types
-    .refine((files) => files && files.length > 0, {
-      message: 'Image file is required',
-    })
-    .refine((files) => files?.size < (5 * 1024 * 1024), {
-      message: 'File size must be less than 5MB',
     })
 })
-
 
 export default function ItemPage({ params }: { params: { id?: string[] } }) {
 
@@ -297,7 +288,7 @@ export default function ItemPage({ params }: { params: { id?: string[] } }) {
                               ))) : (
                               <TableRow>
                                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                                  No results.
+                                  Nenhum resultado
                                 </TableCell>
                               </TableRow>)
                             }
@@ -379,7 +370,7 @@ export default function ItemPage({ params }: { params: { id?: string[] } }) {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="hidden items-center gap-2 md:ml-auto md:flex">
+              <div className="flex items-center gap-2 md:ml-auto">
                 <Button variant="outline" size="sm" asChild>
                   <Link href="/dashboard">Discard</Link>
                 </Button>

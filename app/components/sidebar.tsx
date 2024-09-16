@@ -2,7 +2,6 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Playlist } from "../data/playlists"
 import { Badge } from "@/components/ui/badge"
-import { Drama } from "lucide-react"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   playlists: Playlist[]

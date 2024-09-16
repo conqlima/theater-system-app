@@ -56,7 +56,6 @@ import { Calendar } from "@/components/ui/calendar"
 import { CalendarIcon, PlusCircle, MoreHorizontal } from "lucide-react"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
-import { columns } from "./columns"
 import { useState } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { HorariosReserva } from "@/app/domain/horariosReserva"
@@ -292,7 +291,7 @@ export default function ItemPage({ params }: { params: { id?: string[] } }) {
                                 </TableRow>
                               ))) : (
                               <TableRow>
-                                <TableCell colSpan={columns.length} className="h-24 text-center">
+                                <TableCell colSpan={2} className="h-24 text-center">
                                   Nenhum resultado
                                 </TableCell>
                               </TableRow>)

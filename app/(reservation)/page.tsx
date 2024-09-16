@@ -23,10 +23,18 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from 'react'
 import { CalendarDateRangePicker } from "./date-range-picker"
+import { addDays, format } from "date-fns"
+import { DateRange } from "react-day-picker"
 
 export default function LandingPage() {
 
     const [selectedCategory, setSelectedCategory] = useState('all');
+    const [date, setDate] = useState<DateRange | undefined>({
+        from: new Date(2023, 0, 20),
+        to: addDays(new Date(2023, 0, 20), 20),
+    })
+
+    console.log(date)
 
     const filteredItems = listenNowAlbums.filter(item => {
         if (selectedCategory === 'all') {
@@ -57,7 +65,7 @@ export default function LandingPage() {
                                     className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
                                 />
                             </div>
-                            <CalendarDateRangePicker className="ml-4" />
+                            <CalendarDateRangePicker date={date} setDate={setDate} />
                         </div>
                         <TabsContent
                             value="all"

@@ -1,6 +1,8 @@
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Playlist } from "../data/playlists"
+import { Badge } from "@/components/ui/badge"
+import { Drama } from "lucide-react"
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   playlists: Playlist[]
@@ -34,7 +36,7 @@ export function Sidebar({ className, playlists }: SidebarProps) {
               </svg>
               Peças
             </Button>
-            <Button variant="ghost" className="w-full justify-start">
+            <Button disabled variant="ghost" className="w-full justify-start">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -49,8 +51,9 @@ export function Sidebar({ className, playlists }: SidebarProps) {
                 <path d="M12 18V2l7 4" />
               </svg>
               Teatros
+              <Badge className="ml-1" variant="outline">em breve</Badge>
             </Button>
-            <Button variant="ghost" className="w-full justify-start">
+            <Button disabled variant="ghost" className="w-full justify-start">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -65,8 +68,9 @@ export function Sidebar({ className, playlists }: SidebarProps) {
                 <circle cx="12" cy="7" r="4" />
               </svg>
               Cidades
+              <Badge className="ml-1" variant="outline">em breve</Badge>
             </Button>
-            <Button variant="ghost" className="w-full justify-start">
+            <Button disabled variant="ghost" className="w-full justify-start">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -81,8 +85,9 @@ export function Sidebar({ className, playlists }: SidebarProps) {
                 <circle cx="17" cy="7" r="5" />
               </svg>
               Artistas
+              <Badge className="ml-1" variant="outline">em breve</Badge>
             </Button>
-            <Button variant="ghost" className="w-full justify-start">
+            <Button disabled variant="ghost" className="w-full justify-start">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
@@ -99,6 +104,7 @@ export function Sidebar({ className, playlists }: SidebarProps) {
                 <path d="M4 4v16" />
               </svg>
               Monólogos
+              <Badge className="ml-1" variant="outline">em breve</Badge>
             </Button>
           </div>
         </div>

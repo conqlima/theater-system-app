@@ -81,9 +81,7 @@ export const columns: ColumnDef<Reservas>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Realizado em" />
-    ),
+    header: "Realizado em"
   },
   {
     id: "actions",

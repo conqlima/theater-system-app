@@ -7,7 +7,7 @@ export default function ReservationLayout({
     children: React.ReactNode
 }) {
     return (
-        <div className="hidden md:block">
+        <div className="md:block">
         <div className="border-t">
             <div className="bg-background">
                 <div className="grid lg:grid-cols-5">

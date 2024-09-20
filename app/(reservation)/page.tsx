@@ -17,21 +17,20 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination"
-import { AlbumArtwork } from "../components/album-artwork"
+import { AlbumArtwork } from "./components/album-artwork"
 import { listenNowAlbums } from "../data/albums"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from 'react'
-import { CalendarDateRangePicker } from "./date-range-picker"
-import { addDays, format } from "date-fns"
+import { CalendarDateRangePicker } from "./components/date-range-picker"
+import { addDays } from "date-fns"
 import { DateRange } from "react-day-picker"
 
 export default function LandingPage() {
 
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [date, setDate] = useState<DateRange | undefined>({
-        from: new Date(2023, 0, 20),
-        to: addDays(new Date(2023, 0, 20), 20),
+        from: new Date(),
+        to: addDays(new Date(), 20),
     })
 
     console.log(date)

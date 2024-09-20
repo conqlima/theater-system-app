@@ -1,7 +1,7 @@
 "use client"
 
 import { CalendarIcon } from "@radix-ui/react-icons"
-import { format } from "date-fns"
+import { format, subDays } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { DateRange } from "react-day-picker"
 import { cn } from "@/lib/utils"
@@ -38,7 +38,7 @@ export function CalendarDateRangePicker({ date, setDate }: { date: DateRange | u
                 format(date.from, "LLL dd, y")
               )
             ) : (
-              <span>Pick a date</span>
+              <span>Escolha uma data</span>
             )}
           </Button>
         </PopoverTrigger>
@@ -51,6 +51,9 @@ export function CalendarDateRangePicker({ date, setDate }: { date: DateRange | u
             selected={date}
             onSelect={setDate}
             numberOfMonths={2}
+            disabled={(date: Date) =>
+              date < subDays(new Date(), 1) // yesterday
+            }
           />
         </PopoverContent>
       </Popover>

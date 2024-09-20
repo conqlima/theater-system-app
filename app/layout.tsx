@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import { UserProvider } from '@auth0/nextjs-auth0/client'
 import { Toaster } from "@/components/ui/toaster"
-import { Profile } from "./components/profile"
+import { Profile } from "./profile"
 import './globals.css'
 
 export const metadata: Metadata = {

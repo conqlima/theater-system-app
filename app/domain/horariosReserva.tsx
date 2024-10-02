@@ -1,5 +1,5 @@
 export type HorariosReserva = {
-    data: string
-    hora: string
+    date: string
+    time: string
     id: string
 }

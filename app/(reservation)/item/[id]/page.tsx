@@ -89,13 +89,20 @@ function createDateTimeDict(isoDates: string[]) {
 const dateTimeDict = createDateTimeDict(reservations);
 const availableDates = Object.keys(dateTimeDict);
 
-export default function ReservationPage() {
+export default function ItemPage({ params }: { params: { id: string } }) {
 
     const [selectedDate, setSelectedDate] = useState<string | undefined>(undefined);
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
     })
+
+    const { id } = params;
+  
+    if (id && id.length > 0)
+    {
+
+    }
 
     const availableTimes = selectedDate ? dateTimeDict[selectedDate] : []
 

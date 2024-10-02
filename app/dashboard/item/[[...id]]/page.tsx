@@ -90,6 +90,7 @@ export default function ItemPage({ params }: { params: { id?: string[] } }) {
   })
 
   const { id } = params;
+  
   if (id && id.length > 0) {
     form.setValue('name', id[0]);
     form.setValue('description', "teste teste");
@@ -102,7 +103,7 @@ export default function ItemPage({ params }: { params: { id?: string[] } }) {
   const isButtonDisabled: boolean = data === undefined || hora === '';
 
   const addItem = () => {
-    setHorarios([...horarios, { data: data ? data.toLocaleDateString() : '', hora: hora, id: uuid() }])
+    setHorarios([...horarios, { date: data ? data.toLocaleDateString() : '', time: hora, id: uuid() }])
   }
 
   const removeItem = (id: string) => {
@@ -263,10 +264,10 @@ export default function ItemPage({ params }: { params: { id?: string[] } }) {
                               horarios.map(item => (
                                 <TableRow key={item.id}>
                                   <TableCell className="md:table-cell">
-                                    {item.data}
+                                    {item.date}
                                   </TableCell>
                                   <TableCell className="md:table-cell">
-                                    {item.hora}
+                                    {item.time}
                                   </TableCell>
                                   <TableCell>
                                     <DropdownMenu>

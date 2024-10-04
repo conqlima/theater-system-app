@@ -2,10 +2,12 @@
 
 import {
   ColumnDef,
+  ColumnFiltersState,
   SortingState,
   VisibilityState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   useReactTable,
   getPaginationRowModel,
   getSortedRowModel,
@@ -20,6 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { useState } from "react"
+import { Input } from "@/components/ui/input"
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableViewOptions } from "./data-table-view-options"
 
@@ -35,6 +38,7 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = useState({})
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const table = useReactTable({
     data,
     columns,
@@ -44,17 +48,28 @@ export function DataTable<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
       columnVisibility,
       rowSelection,
+      columnFilters,
     },
   })
 
   return (
     <div>
-      <div className="flex items-center py-4">
-      <DataTableViewOptions table={table} />
+      <div className="flex py-4">
+          <Input
+            placeholder="buscar..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+            onChange={(event) =>
+              table.getColumn("name")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm ml-auto mr-4"
+          />
+        <DataTableViewOptions table={table} />
       </div>
       <div className="rounded-md border">
         <Table>

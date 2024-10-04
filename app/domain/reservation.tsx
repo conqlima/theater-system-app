@@ -1,4 +1,4 @@
-export type Reservas = {
+export type Reservation = {
     id: string
     name: string
     playName: string

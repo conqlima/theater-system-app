@@ -11,13 +11,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
-import { Reservas } from "@/app/domain/reservas"
+import { Reservation } from "@/app/domain/reservation"
 import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header"
 
-export const columns: ColumnDef<Reservas>[] = [
+export const columns: ColumnDef<Reservation>[] = [
   {
     id: "select",
     header: ({ table }) => (

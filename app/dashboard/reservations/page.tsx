@@ -1,12 +1,5 @@
 'use client'
-import Image from "next/image"
-import {
-  MoreHorizontal,
-  PlusCircle,
-  Search
-} from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+
 import {
   Card,
   CardContent,
@@ -15,59 +8,34 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { columns } from "./columns"
 import { DataTable } from "@/components/ui/data-table"
-import { v4 as uuid } from 'uuid'
-import { Reservas } from "@/app/domain/reservas"
+import { Reservation } from "@/app/domain/reservation"
 
 export default function dashboardReservationPage() {
 
-  const items: Reservas[] = [
-    { id: uuid(), name: 'Fulano de tal', status: 'pending', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-11 10:42 AM' },
-    { id: uuid(), name: 'Ciclano e tal', status: 'pending', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-12 10:56 PM' },
-    { id: uuid(), name: 'Gabriel Queiroz', status: 'approved', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-13 10:56 AM' },
-    { id: uuid(), name: 'Will smith', status: 'approved', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-14 10:32 AM' },
-    { id: uuid(), name: 'Agata', status: 'pending', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-15 10:40 AM' },
-    { id: uuid(), name: 'Agata', status: 'pending', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-15 10:40 AM' },
-    { id: uuid(), name: 'Agata', status: 'pending', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-15 10:40 AM' },
-    { id: uuid(), name: 'Agata', status: 'pending', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-15 10:40 AM' },
-    { id: uuid(), name: 'Agata', status: 'pending', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-15 10:40 AM' },
-    { id: uuid(), name: 'Agata', status: 'pending', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-15 10:40 AM' },
-    { id: uuid(), name: 'Agata', status: 'pending', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-15 10:40 AM' },
-    { id: uuid(), name: 'Agata', status: 'pending', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-15 10:40 AM' },
-    { id: uuid(), name: 'Agata', status: 'pending', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-15 10:40 AM' },
-    { id: uuid(), name: 'Agata', status: 'pending', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-15 10:40 AM' },
-    { id: uuid(), name: 'Agata', status: 'pending', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-15 10:40 AM' },
-    { id: uuid(), name: 'Agata', status: 'pending', playName: 'jhdfdjfhdj idufidjh', imageURL: '/placeholder.svg', createdAt: '2023-07-15 10:40 AM' },
-  ];
-
+  const [reservations, setReservations] = useState<Reservation[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
 
-  const filteredItems = items.filter(item => {
+  useEffect(() => {
+    const fetchReservations = async () => {
+      const response = await fetch('/dashboard/reservations/api');
+      const data = await response.json();
+      setReservations(data);
+    };
+
+    fetchReservations();
+  }, []);
+
+  const filteredItems = reservations.filter(item => {
     if (selectedCategory === 'all') {
       return true;
     }
@@ -86,7 +54,6 @@ export default function dashboardReservationPage() {
             <TabsTrigger value="approved">Approved</TabsTrigger>
           </TabsList>
           <div className="ml-auto flex items-center gap-2">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search..."
@@ -103,7 +70,7 @@ export default function dashboardReservationPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-            <DataTable columns={columns} data={filteredItems} />
+              <DataTable columns={columns} data={filteredItems} />
             </CardContent>
             <CardFooter>
             </CardFooter>

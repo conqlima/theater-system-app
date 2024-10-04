@@ -53,13 +53,6 @@ export default function dashboardReservationPage() {
             <TabsTrigger value="pending">Pending</TabsTrigger>
             <TabsTrigger value="approved">Approved</TabsTrigger>
           </TabsList>
-          <div className="ml-auto flex items-center gap-2">
-            <Input
-              type="search"
-              placeholder="Search..."
-              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-            />
-          </div>
         </div>
         <TabsContent value={selectedCategory}>
           <Card x-chunk="dashboard-06-chunk-0">

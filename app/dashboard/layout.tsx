@@ -9,12 +9,12 @@ export default function DashboardLayout({
 }) {
 
   return (
-      <TooltipProvider>
-        <div className="flex min-h-screen w-full flex-col bg-muted/40 justify-center">
-          <div className="flex flex-col sm:gap-4">
-            {children}
-          </div>
+    <TooltipProvider>
+      <div className="flex w-full flex-col bg-muted/40 justify-center">
+        <div className="flex flex-col sm:gap-4 py-6 border-t">
+          {children}
         </div>
-      </TooltipProvider>
+      </div>
+    </TooltipProvider>
   )
 }

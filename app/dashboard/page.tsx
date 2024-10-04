@@ -37,7 +37,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import Link from 'next/link'
-import { useState } from 'react';
+import { useState } from 'react'
 
 export default function Dashboard() {
 

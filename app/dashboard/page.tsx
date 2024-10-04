@@ -1,10 +1,7 @@
 'use client'
-import Image from "next/image"
 import {
-  MoreHorizontal,
   PlusCircle,
 } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -14,22 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import {
   Tabs,
   TabsContent,
@@ -37,25 +19,31 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { DataTable } from "@/components/ui/data-table"
+import { Play } from "../domain/play"
+import { columns } from "./columns"
 
 export default function Dashboard() {
 
-  const items = [
-    { id: 1, Name: 'Apple', Status: 'draft', Description: 'jhdfdjfhdj idufidjh', ImageURL: '/placeholder.svg', CreatedAt: '2023-07-12 10:42 AM' },
-    { id: 2, Name: 'Carrot', Status: 'active', Description: 'jhdfdjfhdj idufidjh', ImageURL: '/placeholder.svg', CreatedAt: '2023-07-12 10:42 AM' },
-    { id: 3, Name: 'Banana', Status: 'archived', Description: 'jhdfdjfhdj idufidjh', ImageURL: '/placeholder.svg', CreatedAt: '2023-07-12 10:42 AM' },
-    { id: 4, Name: 'Broccoli', Status: 'archived', Description: 'jhdfdjfhdj idufidjh', ImageURL: '/placeholder.svg', CreatedAt: '2023-07-12 10:42 AM' },
-    { id: 5, Name: 'Chicken', Status: 'active', Description: 'jhdfdjfhdj idufidjh', ImageURL: '/placeholder.svg', CreatedAt: '2023-07-12 10:42 AM' },
-  ];
-
+  const [plays, setPlays] = useState<Play[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
 
-  const filteredItems = items.filter(item => {
+  useEffect(() => {
+    const fetchPlays = async () => {
+      const response = await fetch('/dashboard/api');
+      const data = await response.json();
+      setPlays(data);
+    };
+
+    fetchPlays();
+  }, []);
+
+  const filteredItems = plays.filter(item => {
     if (selectedCategory === 'all') {
       return true;
     }
-    return item.Status === selectedCategory;
+    return item.status === selectedCategory;
   });
 
   return (
@@ -73,11 +61,6 @@ export default function Dashboard() {
             </TabsTrigger>
           </TabsList>
           <div className="ml-auto flex items-center gap-2">
-            <Input
-              type="search"
-              placeholder="Search..."
-              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-            />
             <Button size="sm" className="h-8 gap-1" asChild>
               <div>
                 <PlusCircle className="h-3.5 w-3.5" />
@@ -89,86 +72,14 @@ export default function Dashboard() {
         <TabsContent value={selectedCategory}>
           <Card x-chunk="dashboard-06-chunk-0">
             <CardHeader>
-              <CardTitle>Products</CardTitle>
+              <CardTitle>Peças</CardTitle>
               <CardDescription>
-                Manage your products and view their sales performance.
+                Crie, delete ou arquive suas peças aqui
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="hidden w-[100px] sm:table-cell">
-                      <span className="sr-only">Image</span>
-                    </TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Description
-                    </TableHead>
-                    <TableHead className="hidden md:table-cell">
-                      Created at
-                    </TableHead>
-                    <TableHead>
-                      <span className="sr-only">Actions</span>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredItems.map(item => (
-                    <TableRow>
-                      <TableCell className="hidden sm:table-cell">
-                        <Image
-                          alt="Product image"
-                          className="aspect-square rounded-md object-cover"
-                          height="64"
-                          src={item.ImageURL}
-                          width="64"
-                        />
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {item.Name}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{item.Status}</Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {item.Description}
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {item.CreatedAt}
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem>Edit</DropdownMenuItem>
-                            <DropdownMenuItem>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-
-                  ))}
-                </TableBody>
-              </Table>
+              <DataTable columns={columns} data={filteredItems} />
             </CardContent>
-            <CardFooter>
-              <div className="text-xs text-muted-foreground">
-                Showing <strong>1-10</strong> of <strong>32</strong>{" "}
-                products
-              </div>
-            </CardFooter>
           </Card>
         </TabsContent>
       </Tabs>

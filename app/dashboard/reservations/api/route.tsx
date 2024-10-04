@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
 
-    const userRepository = new ReservationRepository();
-    const reservations = await userRepository.getAllReservations();
+    const reservationRepository = new ReservationRepository();
+    const reservations = await reservationRepository.getAllReservations();
     return NextResponse.json(reservations);
 }

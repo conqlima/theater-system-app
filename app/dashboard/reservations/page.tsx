@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import {
   Tabs,
   TabsContent,
@@ -20,7 +19,7 @@ import { columns } from "./columns"
 import { DataTable } from "@/components/ui/data-table"
 import { Reservation } from "@/app/domain/reservation"
 
-export default function dashboardReservationPage() {
+export default function DashboardReservationPage() {
 
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');

@@ -98,9 +98,8 @@ export default function ItemPage({ params }: { params: { id: string } }) {
     })
 
     const { id } = params;
-  
-    if (id && id.length > 0)
-    {
+
+    if (id && id.length > 0) {
 
     }
 

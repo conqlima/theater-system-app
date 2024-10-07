@@ -16,6 +16,7 @@ import Image from "next/image"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header"
+import Link from 'next/link'
 
 export const columns: ColumnDef<Play>[] = [
   {
@@ -75,11 +76,11 @@ export const columns: ColumnDef<Play>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: "Realizado em"
+    header: "Criada em"
   },
   {
     id: "actions",
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const item = row.original
       return (
         <DropdownMenu>
@@ -92,10 +93,8 @@ export const columns: ColumnDef<Play>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => item.id}
-            >
-              Aprovar
+            <DropdownMenuItem asChild>
+              <Link href={"/dashboard/item/" + item.id}>Editar</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

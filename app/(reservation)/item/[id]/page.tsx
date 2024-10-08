@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
-import { CalendarIcon, CalendarDays, Clock } from "lucide-react"
+import { CalendarIcon, CalendarDays, Clock, ChevronLeft } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from 'zod'
 import { cn } from "@/lib/utils"
@@ -36,6 +36,7 @@ import {
     SelectTrigger,
 } from "@/components/ui/select"
 import Image from "next/image"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { MapPinned, CalendarClock } from "lucide-react"
@@ -124,6 +125,13 @@ export default function ItemPage({ params }: { params: { id: string } }) {
         <>
             <div className="col-span-4 lg:col-span-4 grid flex-1 items-start gap-4">
                 <div className="lg:border-l h-full px-8 py-6 lg:px-8">
+                    <div className="pb-4">
+                        <Button variant="outline" size="icon" className="h-7 w-7">
+                            <Link href="/">
+                                <ChevronLeft className="h-4 w-4" />
+                            </Link>
+                        </Button>
+                    </div>
                     <div className="flex space-x-4 pb-4">
                         <div className="overflow-hidden rounded-md">
                             <Image

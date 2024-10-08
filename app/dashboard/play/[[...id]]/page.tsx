@@ -53,7 +53,7 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calendar"
-import { CalendarIcon, PlusCircle, MoreHorizontal } from "lucide-react"
+import { CalendarIcon, PlusCircle, MoreHorizontal, ChevronLeft } from "lucide-react"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { useState, useEffect } from "react"
@@ -65,24 +65,51 @@ import { Play } from "@/app/domain/play"
 const FormSchema = z.object({
   name: z
     .string()
-    .max(10, {
-      message: "Name must not be longer than 30 characters."
+    .max(50, {
+      message: "Nome deve ter no máximo 50 caracteres"
     }),
   description: z
     .string()
     .max(1000, {
-      message: "Description must not be longer than 1000 characters"
+      message: "Descrição deve ter no máximo 1000 caracteres"
     }),
   status: z
     .string({
-      required_error: "Please select an status to display."
+      required_error: "Por favor, selecione um status"
     }),
   image: z
     .any()
     .refine((files) => files && files.length > 0, {
-      message: 'Image file is required',
+      message: 'Imagem é obrigatória',
     })
 })
+
+// Default values for the form
+const defaultValues = {
+  name: "",
+  description: "",
+  status: "",
+  image: null
+};
+
+
+function getDatePart(isoString: string) {
+  return new Date(isoString).toLocaleDateString();
+}
+
+function getHourAndMinutePart(isoString: string) {
+  return isoString.split('T')[1].substring(0, 5);
+}
+
+function getHorariosReserva(isoDates: string[]) {
+  const horarios: HorariosReserva[] = [];
+  isoDates.forEach((isoString) => {
+    const datePart = getDatePart(isoString);
+    const timePart = getHourAndMinutePart(isoString);
+    horarios.push({ date: datePart, time: timePart, id: uuid() });
+  })
+  return horarios;
+}
 
 export default function PlayPage({ params }: { params: { id?: string[] } }) {
 
@@ -91,7 +118,8 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
   const [data, setData] = useState<Date>()
   const [hora, setHora] = useState<string>('')
   const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema)
+    resolver: zodResolver(FormSchema),
+    defaultValues
   })
   const isButtonDisabled: boolean = data === undefined || hora === '';
   const { id } = params;
@@ -102,15 +130,14 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
         const response = await fetch(`/api/play/${id}`);
         const data: Play = await response.json();
         setPlay(data);
+        form.setValue('name', data.name ?? "");
+        form.setValue('description', data.description ?? "");
+        form.setValue('status', data.status ?? "");
+        setHorarios(getHorariosReserva(data.exhibitionDates))
       };
 
       fetchItems(id[0]);
     }, []);
-
-    form.setValue('name', play?.name ?? "");
-    form.setValue('description', play?.description ?? "");
-    console.log(play?.status)
-    form.setValue('status', play?.status ?? "");
   }
 
   const addItem = () => {
@@ -128,20 +155,25 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
         <form onSubmit={form.handleSubmit(() => { })}>
           <div className="grid flex-1 auto-rows-max gap-4">
             <div className="flex items-center gap-4">
+              <Button variant="outline" size="icon" className="h-7 w-7">
+                <Link href="/dashboard">
+                  <ChevronLeft className="h-4 w-4" />
+                </Link>
+              </Button>
               <div className="hidden items-center gap-2 md:ml-auto md:flex">
                 <Button variant="outline" size="sm" asChild>
-                  <Link href="/dashboard">Discard</Link>
+                  <Link href="/dashboard">Descartar</Link>
                 </Button>
-                <Button type="submit" size="sm">Save</Button>
+                <Button type="submit" size="sm">Salvar</Button>
               </div>
             </div>
             <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
               <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
                 <Card x-chunk="dashboard-07-chunk-0">
                   <CardHeader>
-                    <CardTitle>Product Details</CardTitle>
+                    <CardTitle>Detalhes da peça</CardTitle>
                     <CardDescription>
-                      Lipsum dolor sit amet, consectetur adipiscing elit
+                      Cadastre/edite sua peça aqui
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -150,7 +182,7 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
                         <FormField control={form.control} name="name"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Name</FormLabel>
+                              <FormLabel>Nome</FormLabel>
                               <FormControl>
                                 <Input
                                   id="name"
@@ -167,7 +199,7 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
                         <FormField control={form.control} name="description"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Description</FormLabel>
+                              <FormLabel>Descrição</FormLabel>
                               <FormControl>
                                 <Textarea
                                   id="description"
@@ -295,7 +327,7 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
                                       <DropdownMenuContent align="end">
                                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                         <DropdownMenuItem onClick={() => removeItem(item.id)} >
-                                          Delete
+                                          Deletar
                                         </DropdownMenuItem>
                                       </DropdownMenuContent>
                                     </DropdownMenu>
@@ -318,7 +350,7 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
               <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
                 <Card x-chunk="dashboard-07-chunk-3">
                   <CardHeader>
-                    <CardTitle>Product Status</CardTitle>
+                    <CardTitle>Status</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid gap-6">
@@ -330,7 +362,7 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
                             <FormItem>
                               <FormLabel>Status</FormLabel>
                               <FormControl>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} value={field.value} defaultValue={field.value}>
                                   <SelectTrigger id="status" aria-label="Select status">
                                     <SelectValue placeholder="Select status" />
                                   </SelectTrigger>
@@ -352,9 +384,9 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
                   className="overflow-hidden" x-chunk="dashboard-07-chunk-4"
                 >
                   <CardHeader>
-                    <CardTitle>Product Images</CardTitle>
+                    <CardTitle>Imagem</CardTitle>
                     <CardDescription>
-                      Lipsum dolor sit amet, consectetur adipiscing elit
+                      Suba uma imagem com boa definição como capa da peça
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -365,7 +397,7 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
                           name="image"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>File</FormLabel>
+                              <FormLabel>Arquivo</FormLabel>
                               <FormControl className="w-[240px]">
                                 <div>
                                   <Input
@@ -388,9 +420,9 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 md:ml-auto">
                 <Button variant="outline" size="sm" asChild>
-                  <Link href="/dashboard">Discard</Link>
+                  <Link href="/dashboard">Descartar</Link>
                 </Button>
-                <Button type="submit" size="sm">Save</Button>
+                <Button type="submit" size="sm">Salvar</Button>
               </div>
             </div>
           </div>

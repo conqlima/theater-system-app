@@ -15,7 +15,7 @@ import {
           <MenubarTrigger>Peças</MenubarTrigger>
           <MenubarContent>
             <MenubarItem asChild>
-              <Link href="/dashboard/item">Inserir nova peça</Link>
+              <Link href="/dashboard/play">Inserir nova peça</Link>
             </MenubarItem>
             <MenubarSeparator />
             <MenubarItem asChild>

@@ -1,10 +1,10 @@
 import Image from "next/image"
 import { cn } from "@/lib/utils"
-import { Album } from "../../data/albums"
 import Link from 'next/link'
+import { Play } from "@/app/domain/play"
 
 interface AlbumArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
-  album: Album
+  album: Play
   aspectRatio?: "portrait" | "square"
   width?: number
   height?: number
@@ -18,12 +18,13 @@ export function AlbumArtwork({
   className,
   ...props
 }: AlbumArtworkProps) {
+  console.log("teste")
   return (
     <div className={cn("space-y-3", className)} {...props}>
       <div className="overflow-hidden rounded-md">
         <Link href={"/item/" + 123}>
           <Image
-            src={album.cover}
+            src={album.imageURL}
             alt={album.name}
             width={width}
             height={height}
@@ -36,7 +37,7 @@ export function AlbumArtwork({
       </div>
       <div className="space-y-1 text-sm">
         <h3 className="font-medium leading-none">{album.name}</h3>
-        <p className="text-xs text-muted-foreground">{album.artist}</p>
+        <p className="text-xs text-muted-foreground">{album.status}</p>
       </div>
     </div>
   )

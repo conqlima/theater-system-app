@@ -8,39 +8,54 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination"
 import { AlbumArtwork } from "./components/album-artwork"
-import { listenNowAlbums } from "../data/albums"
 import { Input } from "@/components/ui/input"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { CalendarDateRangePicker } from "./components/date-range-picker"
 import { addDays } from "date-fns"
 import { DateRange } from "react-day-picker"
+import { Play } from "../domain/play"
+import { PaginationComponent } from "./components/pagination"
 
 export default function LandingPage() {
 
+    const [plays, setPlays] = useState<Play[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(0);
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [date, setDate] = useState<DateRange | undefined>({
         from: new Date(),
         to: addDays(new Date(), 20),
     })
+  
+    useEffect(() => {
+        const fetchItems = async (page: number) => {
+          const res = await fetch(`/api/play?page=${page}`);
+          const data: PaginatedData<Play> = await res.json();
+          setPlays(data.items);
+          setTotalPages(data.totalPages);
+          setCurrentPage(data.currentPage);
+        };
+        
+        fetchItems(currentPage);
 
-    console.log(date)
+        const filteredItems = plays.filter(item => {
+            if (selectedCategory === 'all') {
+                return true;
+            }
+            return item.name === selectedCategory;
+        });
 
-    const filteredItems = listenNowAlbums.filter(item => {
-        if (selectedCategory === 'all') {
-            return true;
+        setPlays(filteredItems);
+
+      }, [currentPage]);
+    
+      const handlePageChange = (page: number) => {
+        if (page >= 1 && page <= totalPages) {
+          setCurrentPage(page);
         }
-        return item.name === selectedCategory;
-    });
+      };
+
     return (
         <>
             <div className="col-span-3 lg:col-span-4 lg:border-l">
@@ -84,10 +99,10 @@ export default function LandingPage() {
                             <div className="relative">
                                 <ScrollArea className="h-85 rounded-md">
                                     <div className="grid grid-cols-4 gap-4">
-                                        {filteredItems.map((album) => (
+                                        {plays.map((item) => (
                                             <AlbumArtwork
-                                                key={album.name}
-                                                album={album}
+                                                key={item.id}
+                                                album={item}
                                                 className="w-[200px]"
                                                 aspectRatio="portrait"
                                                 width={250}
@@ -98,30 +113,7 @@ export default function LandingPage() {
                                 </ScrollArea>
                             </div>
                         </TabsContent>
-                        <Pagination>
-                            <PaginationContent>
-                                <PaginationItem>
-                                    <PaginationPrevious href="#" />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">1</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#" isActive>
-                                        2
-                                    </PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">3</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationNext href="#" />
-                                </PaginationItem>
-                            </PaginationContent>
-                        </Pagination>
+                        <PaginationComponent currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
                     </Tabs>
                 </div>
             </div>

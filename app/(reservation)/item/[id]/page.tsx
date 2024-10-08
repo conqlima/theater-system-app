@@ -122,8 +122,8 @@ export default function ItemPage({ params }: { params: { id: string } }) {
 
     return (
         <>
-            <div className="col-span-3 lg:col-span-4 grid flex-1 items-start gap-4">
-                <div className="lg:border-l h-full px-4 py-6 lg:px-8">
+            <div className="col-span-4 lg:col-span-4 grid flex-1 items-start gap-4">
+                <div className="lg:border-l h-full px-8 py-6 lg:px-8">
                     <div className="flex space-x-4 pb-4">
                         <div className="overflow-hidden rounded-md">
                             <Image
@@ -134,19 +134,19 @@ export default function ItemPage({ params }: { params: { id: string } }) {
                                 className="h-auto w-auto object-cover transition-all portrait"
                             />
                         </div>
-                        <div>
+                        <div className="w-full">
                             <Card
-                                className="sm:col-span-3" x-chunk="dashboard-05-chunk-0"
+                                className="sm:col-span-6 w-full" x-chunk="dashboard-05-chunk-0"
                             >
                                 <Form {...form}>
                                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                                        <CardHeader className="pb-3">
+                                        <CardHeader>
                                             <CardTitle>Noviça Rebelde</CardTitle>
-                                            <CardDescription className="max-w-lg text-balance leading-relaxed">
+                                            <CardDescription className="text-justify">
                                                 Ao contrário do que se acredita, Lorem Ipsum não é simplesmente um texto randômico. Com mais de 2000 anos, suas raízes podem ser encontradas em uma obra de literatura latina clássica datada de 45 AC. Richard McClintock, um professor de latim do Hampden-Sydney College na Virginia, pesquisou uma das mais obscuras palavras em latim, consectetur, oriunda de uma passagem de Lorem Ipsum, e, procurando por entre citações da palavra na literatura clássica, descobriu a sua indubitável origem. Lorem Ipsum vem das seções 1.10.32 e 1.10.33 do "de Finibus Bonorum et Malorum" (Os Extremos do Bem e do Mal), de Cícero, escrito em 45 AC. Este livro é um tratado de teoria da ética muito popular na época da Renascença. A primeira linha de Lorem Ipsum, "Lorem Ipsum dolor sit amet..." vem de uma linha na seção 1.10.32.
                                             </CardDescription>
                                         </CardHeader>
-                                        <CardContent className="p-6 text-sm">
+                                        <CardContent className="text-sm">
                                             <Separator className="my-2" />
                                             <div className="grid gap-3">
                                                 <div className="font-semibold flex items-center gap-1">

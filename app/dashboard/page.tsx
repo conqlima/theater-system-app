@@ -29,7 +29,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchPlays = async () => {
-      const response = await fetch('/dashboard/api');
+      const response = await fetch('/api/play');
       const data = await response.json();
       setPlays(data);
     };

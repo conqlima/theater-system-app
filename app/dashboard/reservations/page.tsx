@@ -26,7 +26,7 @@ export default function DashboardReservationPage() {
 
   useEffect(() => {
     const fetchReservations = async () => {
-      const response = await fetch('/dashboard/reservations/api');
+      const response = await fetch('/api/reservation');
       const data = await response.json();
       setReservations(data);
     };

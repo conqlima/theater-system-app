@@ -18,11 +18,10 @@ export function AlbumArtwork({
   className,
   ...props
 }: AlbumArtworkProps) {
-  console.log("teste")
   return (
     <div className={cn("space-y-3", className)} {...props}>
       <div className="overflow-hidden rounded-md">
-        <Link href={"/item/" + 123}>
+        <Link href={`/play/${album.id}`}>
           <Image
             src={album.imageURL}
             alt={album.name}

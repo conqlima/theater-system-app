@@ -40,7 +40,8 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { MapPinned, CalendarClock } from "lucide-react"
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { Play } from "@/app/domain/play"
 
 const FormSchema = z.object({
     data: z.date({
@@ -50,14 +51,6 @@ const FormSchema = z.object({
         required_error: "Escolha um horário"
     })
 })
-
-const reservations = [
-    "2024-09-11T16:30:00.000-03:00",
-    "2024-09-11T19:30:00.000-03:00",
-    "2024-09-12T17:30:00.000-03:00",
-    "2024-09-13T22:00:00.000-03:00",
-    "2024-09-14T12:00:00.000-03:00",
-]
 
 function getDatePart(isoString: string) {
     return isoString.split('T')[0];
@@ -87,23 +80,26 @@ function createDateTimeDict(isoDates: string[]) {
     return dateTimeDict;
 }
 
-const dateTimeDict = createDateTimeDict(reservations);
-const availableDates = Object.keys(dateTimeDict);
-
 export default function ItemPage({ params }: { params: { id: string } }) {
 
+    const [play, setPlay] = useState<Play>();
     const [selectedDate, setSelectedDate] = useState<string | undefined>(undefined);
-
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
     })
 
-    const { id } = params;
+    useEffect(() => {
+        const fetchItems = async (id: string) => {
+            const response = await fetch(`/api/play/${id}`);
+            const data: Play = await response.json();
+            setPlay(data);
+        };
 
-    if (id && id.length > 0) {
+        fetchItems(params.id);
+    }, []);
 
-    }
-
+    const dateTimeDict = createDateTimeDict(play?.exhibitionDates ?? [])
+    const availableDates = Object.keys(dateTimeDict)
     const availableTimes = selectedDate ? dateTimeDict[selectedDate] : []
 
     const handleReset = () => {
@@ -121,7 +117,7 @@ export default function ItemPage({ params }: { params: { id: string } }) {
         })
     }
 
-    return (
+    return !play ? ("loading") : (
         <>
             <div className="col-span-4 lg:col-span-4 grid flex-1 items-start gap-4">
                 <div className="lg:border-l h-full px-8 py-6 lg:px-8">
@@ -135,7 +131,7 @@ export default function ItemPage({ params }: { params: { id: string } }) {
                     <div className="flex space-x-4 pb-4">
                         <div className="overflow-hidden rounded-md">
                             <Image
-                                src="https://images.unsplash.com/photo-1611348586804-61bf6c080437?w=300&dpr=2&q=80"
+                                src={play.imageURL}
                                 alt="React Rendezvous"
                                 width={250}
                                 height={330}
@@ -149,9 +145,9 @@ export default function ItemPage({ params }: { params: { id: string } }) {
                                 <Form {...form}>
                                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                                         <CardHeader>
-                                            <CardTitle>Noviça Rebelde</CardTitle>
+                                            <CardTitle>{play.name}</CardTitle>
                                             <CardDescription className="text-justify">
-                                                Ao contrário do que se acredita, Lorem Ipsum não é simplesmente um texto randômico. Com mais de 2000 anos, suas raízes podem ser encontradas em uma obra de literatura latina clássica datada de 45 AC. Richard McClintock, um professor de latim do Hampden-Sydney College na Virginia, pesquisou uma das mais obscuras palavras em latim, consectetur, oriunda de uma passagem de Lorem Ipsum, e, procurando por entre citações da palavra na literatura clássica, descobriu a sua indubitável origem. Lorem Ipsum vem das seções 1.10.32 e 1.10.33 do "de Finibus Bonorum et Malorum" (Os Extremos do Bem e do Mal), de Cícero, escrito em 45 AC. Este livro é um tratado de teoria da ética muito popular na época da Renascença. A primeira linha de Lorem Ipsum, "Lorem Ipsum dolor sit amet..." vem de uma linha na seção 1.10.32.
+                                                {play.description}
                                             </CardDescription>
                                         </CardHeader>
                                         <CardContent className="text-sm">
@@ -226,7 +222,7 @@ export default function ItemPage({ params }: { params: { id: string } }) {
                                                                             handleReset()
                                                                         }}
                                                                         disabled={(date: Date) =>
-                                                                            !availableDates.includes(getDatePart(date.toISOString()))
+                                                                            !availableDates?.includes(getDatePart(date.toISOString()))
                                                                         }
                                                                         initialFocus
                                                                     />
@@ -266,7 +262,7 @@ export default function ItemPage({ params }: { params: { id: string } }) {
                                                                     )}
                                                                 </SelectTrigger>
                                                                 <SelectContent>
-                                                                    {availableTimes.map(item => (
+                                                                    {availableTimes?.map(item => (
                                                                         <SelectItem value={item} key={item}>
                                                                             {item}
                                                                         </SelectItem>

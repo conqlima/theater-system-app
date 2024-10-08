@@ -13,5 +13,6 @@ export async function GET(request: NextRequest) {
     else {
         plays = await playRepository.getAllPlays();
     }
+
     return NextResponse.json(plays);
 }

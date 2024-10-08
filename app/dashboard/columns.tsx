@@ -94,7 +94,7 @@ export const columns: ColumnDef<Play>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link href={"/dashboard/item/" + item.id}>Editar</Link>
+              <Link href={`/dashboard/play/${item.id}`}>Editar</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

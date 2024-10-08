@@ -56,10 +56,11 @@ import { Calendar } from "@/components/ui/calendar"
 import { CalendarIcon, PlusCircle, MoreHorizontal } from "lucide-react"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { HorariosReserva } from "@/app/domain/horariosReserva"
 import { v4 as uuid } from 'uuid'
+import { Play } from "@/app/domain/play"
 
 const FormSchema = z.object({
   name: z
@@ -73,7 +74,7 @@ const FormSchema = z.object({
       message: "Description must not be longer than 1000 characters"
     }),
   status: z
-    .string({ 
+    .string({
       required_error: "Please select an status to display."
     }),
   image: z
@@ -83,24 +84,34 @@ const FormSchema = z.object({
     })
 })
 
-export default function ItemPage({ params }: { params: { id?: string[] } }) {
+export default function PlayPage({ params }: { params: { id?: string[] } }) {
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema)
-  })
-
-  const { id } = params;
-  
-  if (id && id.length > 0) {
-    form.setValue('name', id[0]);
-    form.setValue('description', "teste teste");
-  }
-
+  const [play, setPlay] = useState<Play>();
   const [horarios, setHorarios] = useState<HorariosReserva[]>([])
   const [data, setData] = useState<Date>()
   const [hora, setHora] = useState<string>('')
-
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema)
+  })
   const isButtonDisabled: boolean = data === undefined || hora === '';
+  const { id } = params;
+
+  if (id && id.length > 0) {
+    useEffect(() => {
+      const fetchItems = async (id: string) => {
+        const response = await fetch(`/api/play/${id}`);
+        const data: Play = await response.json();
+        setPlay(data);
+      };
+
+      fetchItems(id[0]);
+    }, []);
+
+    form.setValue('name', play?.name ?? "");
+    form.setValue('description', play?.description ?? "");
+    console.log(play?.status)
+    form.setValue('status', play?.status ?? "");
+  }
 
   const addItem = () => {
     setHorarios([...horarios, { date: data ? data.toLocaleDateString() : '', time: hora, id: uuid() }])
@@ -325,7 +336,7 @@ export default function ItemPage({ params }: { params: { id?: string[] } }) {
                                   </SelectTrigger>
                                   <SelectContent>
                                     <SelectItem value="draft">Draft</SelectItem>
-                                    <SelectItem value="published">Active</SelectItem>
+                                    <SelectItem value="active">Active</SelectItem>
                                     <SelectItem value="archived">Archived</SelectItem>
                                   </SelectContent>
                                 </Select>

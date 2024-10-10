@@ -117,7 +117,7 @@ export default function ItemPage({ params }: { params: { id: string } }) {
         })
     }
 
-    return !play ? ("loading") : (
+    return (
         <>
             <div className="col-span-4 lg:col-span-4 grid flex-1 items-start gap-4">
                 <div className="lg:border-l h-full px-8 py-6 lg:px-8">
@@ -131,7 +131,7 @@ export default function ItemPage({ params }: { params: { id: string } }) {
                     <div className="flex space-x-4 pb-4">
                         <div className="overflow-hidden rounded-md">
                             <Image
-                                src={play.imageURL}
+                                src={play?.imageURL ?? ""}
                                 alt="React Rendezvous"
                                 width={250}
                                 height={330}
@@ -145,9 +145,9 @@ export default function ItemPage({ params }: { params: { id: string } }) {
                                 <Form {...form}>
                                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
                                         <CardHeader>
-                                            <CardTitle>{play.name}</CardTitle>
+                                            <CardTitle>{play?.name}</CardTitle>
                                             <CardDescription className="text-justify">
-                                                {play.description}
+                                                {play?.description}
                                             </CardDescription>
                                         </CardHeader>
                                         <CardContent className="text-sm">

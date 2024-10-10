@@ -58,7 +58,7 @@ import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { useState, useEffect } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { HorariosReserva } from "@/app/domain/horariosReserva"
+import { ExhibitionDate } from "@/app/domain/exhibitionDate"
 import { v4 as uuid } from 'uuid'
 import { Play } from "@/app/domain/play"
 
@@ -102,7 +102,7 @@ function getHourAndMinutePart(isoString: string) {
 }
 
 function getHorariosReserva(isoDates: string[]) {
-  const horarios: HorariosReserva[] = [];
+  const horarios: ExhibitionDate[] = [];
   isoDates.forEach((isoString) => {
     const datePart = getDatePart(isoString);
     const timePart = getHourAndMinutePart(isoString);
@@ -114,7 +114,7 @@ function getHorariosReserva(isoDates: string[]) {
 export default function PlayPage({ params }: { params: { id?: string[] } }) {
 
   const [play, setPlay] = useState<Play>();
-  const [horarios, setHorarios] = useState<HorariosReserva[]>([])
+  const [horarios, setHorarios] = useState<ExhibitionDate[]>([])
   const [data, setData] = useState<Date>()
   const [hora, setHora] = useState<string>('')
   const form = useForm<z.infer<typeof FormSchema>>({

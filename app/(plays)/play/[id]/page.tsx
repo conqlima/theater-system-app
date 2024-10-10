@@ -277,7 +277,7 @@ export default function ItemPage({ params }: { params: { id: string } }) {
                                             <Separator className="my-4" />
                                         </CardContent>
                                         <CardFooter>
-                                            <Button type="submit">adquirir ingresso amigo</Button>
+                                            <Button type="submit">Adquirir Ingresso Amigo</Button>
                                         </CardFooter>
                                     </form>
                                 </Form>

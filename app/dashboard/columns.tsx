@@ -81,6 +81,8 @@ export const columns: ColumnDef<Play>[] = [
   {
     id: "actions",
     cell: ({ row, table }) => {
+      const selectedRows = table.getSelectedRowModel().rows
+      const selectedIds = selectedRows.map((row) => row.original.name);
       const item = row.original
       return (
         <DropdownMenu>

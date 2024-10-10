@@ -22,16 +22,19 @@ import { DataTable } from "@/components/ui/data-table"
 import { Play } from "../domain/play"
 import { columns } from "./columns"
 
+
 export default function Dashboard() {
 
   const [plays, setPlays] = useState<Play[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPlays = async () => {
       const response = await fetch('/api/play');
       const data = await response.json();
       setPlays(data);
+      setLoading(false);
     };
 
     fetchPlays();

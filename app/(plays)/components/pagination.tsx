@@ -75,7 +75,7 @@ export function PaginationComponent({
                             <PaginationLink isActive={page == currentPage}>{page}</PaginationLink>
                         </PaginationItem>
                     ) : (
-                        <PaginationItem>
+                        <PaginationItem key={index}>
                             <PaginationEllipsis />
                         </PaginationItem>
                     )

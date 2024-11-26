@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { useUser } from '@auth0/nextjs-auth0/client';
+import { useUser } from '@auth0/nextjs-auth0/client'
 
 export function Profile() {
     const { user } = useUser();
@@ -38,7 +38,7 @@ export function Profile() {
                     <DropdownMenuItem>Configurações</DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                        { user ? <a href="/api/auth/logout">Logout</a> : <a href="/api/auth/login">Login</a> }
+                        {user ? <a href="/api/auth/logout">Logout</a> : <a href="/api/auth/login">Login</a>}
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

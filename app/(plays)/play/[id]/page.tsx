@@ -96,7 +96,7 @@ export default function ItemPage({ params }: { params: { id: string } }) {
         };
 
         fetchItems(params.id);
-    }, []);
+    }, [params.id]);
 
     const dateTimeDict = createDateTimeDict(play?.exhibitionDates ?? [])
     const availableDates = Object.keys(dateTimeDict)

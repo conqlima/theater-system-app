@@ -124,8 +124,9 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
   const isButtonDisabled: boolean = data === undefined || hora === '';
   const { id } = params;
 
-  if (id && id.length > 0) {
-    useEffect(() => {
+  // if (id && id.length > 0) {
+  useEffect(() => {
+    if (id && id.length > 0) {
       const fetchItems = async (id: string) => {
         const response = await fetch(`/api/play/${id}`)
         const data: Play = await response.json()
@@ -137,8 +138,9 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
       };
 
       fetchItems(id[0]);
-    }, []);
-  }
+    }
+  }, [id, form]);
+  // }
 
   const addItem = () => {
     setHorarios([...horarios, { date: data ? data.toLocaleDateString() : '', time: hora, id: uuid() }])

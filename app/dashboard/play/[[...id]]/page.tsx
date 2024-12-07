@@ -101,7 +101,7 @@ function getHourAndMinutePart(isoString: string) {
   return isoString.split('T')[1].substring(0, 5);
 }
 
-function getHorariosReserva(isoDates: string[]) {
+function parseReservationTimes(isoDates: string[]) {
   const horarios: ExhibitionDate[] = [];
   isoDates.forEach((isoString) => {
     const datePart = getDatePart(isoString);
@@ -127,13 +127,13 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
   if (id && id.length > 0) {
     useEffect(() => {
       const fetchItems = async (id: string) => {
-        const response = await fetch(`/api/play/${id}`);
-        const data: Play = await response.json();
-        setPlay(data);
-        form.setValue('name', data.name ?? "");
-        form.setValue('description', data.description ?? "");
-        form.setValue('status', data.status ?? "");
-        setHorarios(getHorariosReserva(data.exhibitionDates))
+        const response = await fetch(`/api/play/${id}`)
+        const data: Play = await response.json()
+        setPlay(data)
+        form.setValue('name', data.name ?? "")
+        form.setValue('description', data.description ?? "")
+        form.setValue('status', data.status ?? "")
+        setHorarios(parseReservationTimes(data.exhibitionDates))
       };
 
       fetchItems(id[0]);

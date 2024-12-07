@@ -20,6 +20,7 @@ import { PaginationComponent } from "./components/pagination"
 export default function LandingPage() {
 
     const [plays, setPlays] = useState<Play[]>([]);
+    const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [selectedCategory, setSelectedCategory] = useState('all');
@@ -27,34 +28,38 @@ export default function LandingPage() {
         from: new Date(),
         to: addDays(new Date(), 20),
     })
-  
+
     useEffect(() => {
         const fetchItems = async (page: number) => {
-          const res = await fetch(`/api/play?page=${page}`);
-          const data: PaginatedData<Play> = await res.json();
-          setPlays(data.items);
-          setTotalPages(data.totalPages);
-          setCurrentPage(data.currentPage);
+            const res = await fetch(`/api/play?page=${page}`);
+            const data: PaginatedData<Play> = await res.json();
+            setPlays(data.items);
+            setTotalPages(data.totalPages);
+            setCurrentPage(data.currentPage);
         };
-        
+
         fetchItems(currentPage);
 
-        const filteredItems = plays.filter(item => {
+    }, [currentPage]);
+
+    const filteredItems = plays
+        .filter(item => {
             if (selectedCategory === 'all') {
                 return true;
             }
             return item.name === selectedCategory;
-        });
+        })
+        .filter(item => item.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
-        setPlays(filteredItems);
-
-      }, [currentPage]);
-    
-      const handlePageChange = (page: number) => {
+    const handlePageChange = (page: number) => {
         if (page >= 1 && page <= totalPages) {
-          setCurrentPage(page);
+            setCurrentPage(page);
         }
-      };
+    };
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(event.target.value);
+    };
 
     return (
         <>
@@ -75,6 +80,8 @@ export default function LandingPage() {
                             <div className="ml-auto flex items-center gap-2">
                                 <Input
                                     type="search"
+                                    value={searchQuery}
+                                    onChange={handleSearchChange}
                                     placeholder="Search..."
                                     className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
                                 />
@@ -99,7 +106,7 @@ export default function LandingPage() {
                             <div className="relative">
                                 <ScrollArea className="h-85 rounded-md">
                                     <div className="grid grid-cols-4 gap-4">
-                                        {plays.map((item) => (
+                                        {filteredItems.map((item) => (
                                             <AlbumArtwork
                                                 key={item.id}
                                                 album={item}

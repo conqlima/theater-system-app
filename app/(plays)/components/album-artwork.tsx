@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { cn } from "@/lib/utils"
 import Link from 'next/link'
-import { Play } from "@/app/domain/play"
+import { Play } from "@/domain/play"
 
 interface AlbumArtworkProps extends React.HTMLAttributes<HTMLDivElement> {
   album: Play

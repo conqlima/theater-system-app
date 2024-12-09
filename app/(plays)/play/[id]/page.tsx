@@ -41,7 +41,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { MapPinned, CalendarClock } from "lucide-react"
 import { useState, useEffect } from 'react'
-import { Play } from "@/app/domain/play"
+import { Play } from "@/domain/play"
 
 const FormSchema = z.object({
     data: z.date({

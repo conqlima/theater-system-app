@@ -1,4 +1,4 @@
-import { ReservationRepository } from '@/app/repository/reservationRepository';
+import { ReservationRepository } from '@/repository/reservationRepository';
 import { NextResponse } from 'next/server';
 
 export async function GET() {

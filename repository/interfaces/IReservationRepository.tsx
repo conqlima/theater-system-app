@@ -1,4 +1,4 @@
-import { Reservation } from "../domain/reservation";
+import { Reservation } from "../../domain/reservation";
 
 export interface IReservationRepository {
   getReservationById(id: string): Promise<Reservation | undefined>;

@@ -1,4 +1,4 @@
-import { Play } from "../domain/play";
+import { Play } from "../../domain/play";
 
 export interface IPlayRepository {
   getPlayById(id: string): Promise<Play | undefined>;

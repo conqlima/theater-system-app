@@ -58,9 +58,9 @@ import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { useState, useEffect } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { ExhibitionDate } from "@/app/domain/exhibitionDate"
+import { ExhibitionDate } from "@/domain/exhibitionDate"
 import { v4 as uuid } from 'uuid'
-import { Play } from "@/app/domain/play"
+import { Play } from "@/domain/play"
 
 const FormSchema = z.object({
   name: z
@@ -124,23 +124,21 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
   const isButtonDisabled: boolean = data === undefined || hora === '';
   const { id } = params;
 
-  // if (id && id.length > 0) {
   useEffect(() => {
     if (id && id.length > 0) {
       const fetchItems = async (id: string) => {
         const response = await fetch(`/api/play/${id}`)
         const data: Play = await response.json()
-        setPlay(data)
         form.setValue('name', data.name ?? "")
         form.setValue('description', data.description ?? "")
         form.setValue('status', data.status ?? "")
+        setPlay(data)
         setHorarios(parseReservationTimes(data.exhibitionDates))
       };
 
       fetchItems(id[0]);
     }
   }, [id, form]);
-  // }
 
   const addItem = () => {
     setHorarios([...horarios, { date: data ? data.toLocaleDateString() : '', time: hora, id: uuid() }])

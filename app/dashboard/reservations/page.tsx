@@ -17,7 +17,7 @@ import {
 import { useState, useEffect } from 'react'
 import { columns } from "./columns"
 import { DataTable } from "@/components/ui/data-table"
-import { Reservation } from "@/app/domain/reservation"
+import { Reservation } from "@/domain/reservation"
 
 export default function DashboardReservationPage() {
 

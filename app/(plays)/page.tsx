@@ -14,7 +14,7 @@ import { useState, useEffect } from 'react'
 import { CalendarDateRangePicker } from "./components/date-range-picker"
 import { addDays } from "date-fns"
 import { DateRange } from "react-day-picker"
-import { Play } from "../domain/play"
+import { Play } from "../../domain/play"
 import { PaginationComponent } from "./components/pagination"
 
 export default function LandingPage() {

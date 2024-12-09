@@ -1,5 +1,5 @@
-import { Play } from "../domain/play";
-import { IPlayRepository } from "../interfaces/IPlayRepository";
+import { Play } from "@/domain/play";
+import { IPlayRepository } from "./interfaces/IPlayRepository";
 import { LoremIpsum } from "lorem-ipsum";
 
 const lorem = new LoremIpsum();

@@ -10,8 +10,8 @@ import '@/envConfig.ts'
 const dynamoDbClient = new DynamoDBClient({
     region: 'sa-east-1',
     credentials: {
-        accessKeyId: process.env.ACCESS_KEY_ID!,
-        secretAccessKey: process.env.SECRET_ACCESS_KEY!,
+        accessKeyId: process.env.REACT_APP_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY!,
     },
     // credentials: fromEnv(),
     // credentials: fromIni({ profile: 'personal' }),
@@ -80,7 +80,7 @@ export class PlayRepository implements IPlayRepository {
     }
 
     async createPlay(play: Play): Promise<Play> {
-        console.log(process.env.ACCESS_KEY_ID)
+        console.log(process.env.REACT_APP_ACCESS_KEY_ID)
         const params = {
             TableName: this.tableName,
             Item: {

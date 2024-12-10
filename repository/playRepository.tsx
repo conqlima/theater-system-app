@@ -9,12 +9,11 @@ import { fromIni, fromEnv } from "@aws-sdk/credential-providers";
 const dynamoDbClient = new DynamoDBClient({
     region: 'sa-east-1',
     credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-        sessionToken: process.env.AWS_SESSION_TOKEN!,
+        accessKeyId: process.env.ACCESS_KEY_ID!,
+        secretAccessKey: process.env.SECRET_ACCESS_KEY!,
     },
     // credentials: fromEnv(),
-    // credentials: fromIni({ profile: 'personal' }), // Replace 'personal' with your profile name
+    // credentials: fromIni({ profile: 'personal' }),
 });
 
 const lorem = new LoremIpsum();

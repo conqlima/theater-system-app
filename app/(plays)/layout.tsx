@@ -1,4 +1,4 @@
-import { Sidebar } from "./components/sidebar"
+import { Sidebar } from "./sidebar"
 
 export default function ReservationLayout({
     children,

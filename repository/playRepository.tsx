@@ -1,6 +1,15 @@
 import { Play } from "@/domain/play";
 import { IPlayRepository } from "./interfaces/IPlayRepository";
 import { LoremIpsum } from "lorem-ipsum";
+import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import { fromIni } from "@aws-sdk/credential-providers";
+
+
+// Configure AWS SDK
+const dynamoDbClient = new DynamoDBClient({
+    region: 'sa-east-1', // Replace with your region
+    // credentials: fromIni({ profile: 'personal' }), // Replace 'personal' with your profile name
+});
 
 const lorem = new LoremIpsum();
 
@@ -13,7 +22,7 @@ const dates = [
 ]
 
 const items: Play[] = [
-    { id: "d9d91b37-8173-49e8-b92d-e02516f16b48", name: 'Fulano de tal', description: lorem.generateParagraphs(5), exhibitionDates: dates,  status: 'active', imageURL: 'https://images.unsplash.com/photo-1611348586804-61bf6c080437?w=300&dpr=2&q=80', createdAt: '2023-07-11 10:42 AM' },
+    { id: "d9d91b37-8173-49e8-b92d-e02516f16b48", name: 'Fulano de tal', description: lorem.generateParagraphs(5), exhibitionDates: dates, status: 'active', imageURL: 'https://images.unsplash.com/photo-1611348586804-61bf6c080437?w=300&dpr=2&q=80', createdAt: '2023-07-11 10:42 AM' },
     { id: "ab1db5a8-c8ea-47d6-9962-e131cec25eda", name: 'Ciclano e tal', description: lorem.generateParagraphs(5), exhibitionDates: dates, status: 'draft', imageURL: 'https://images.unsplash.com/photo-1468817814611-b7edf94b5d60?w=300&dpr=2&q=80', createdAt: '2023-07-12 10:56 PM' },
     { id: "ac191818-41c5-43a3-a027-5e99154097af", name: 'Gabriel Queiroz', description: lorem.generateParagraphs(5), exhibitionDates: dates, status: 'archived', imageURL: 'https://images.unsplash.com/photo-1528143358888-6d3c7f67bd5d?w=300&dpr=2&q=80', createdAt: '2023-07-13 10:56 AM' },
     { id: "3d5c0cc9-0580-47aa-93d6-2e47a7fd79fe", name: 'Will smith', description: lorem.generateParagraphs(5), exhibitionDates: dates, status: 'archived', imageURL: 'https://images.unsplash.com/photo-1528143358888-6d3c7f67bd5d?w=300&dpr=2&q=80', createdAt: '2023-07-14 10:32 AM' },
@@ -33,6 +42,9 @@ const items: Play[] = [
 
 export class PlayRepository implements IPlayRepository {
 
+    private tableName: string = 'theaterplays';
+
+
     async getPlayById(id: string): Promise<Play | undefined> {
         const foundItem = items.find((item) => item.id === id);
         return foundItem;
@@ -44,11 +56,11 @@ export class PlayRepository implements IPlayRepository {
 
     async getAllPlaysPaginated(page: number): Promise<PaginatedData<Play>> {
         const ITEMS_PER_PAGE = 5;
-        
+
         // Calculate the start index and end index for the paginated items
         const startIndex = (page - 1) * ITEMS_PER_PAGE;
         const paginatedItems = items.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-        
+
         // Determine total pages based on the total number of items
         const totalPages = Math.ceil(items.length / ITEMS_PER_PAGE);
 
@@ -61,14 +73,27 @@ export class PlayRepository implements IPlayRepository {
         return paginatedData;
     }
 
-    // async createReservation(user: Reservation): Promise<Reservation> {
-    //     const response = await fetch('/api/users', {
-    //         method: 'POST',
-    //         body: JSON.stringify(user),
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //     });
-    //     return await response.json();
-    // }
+    async createPlay(play: Play): Promise<Play> {
+        const params = {
+            TableName: this.tableName,
+            Item: {
+                PlayID: { S: play.id },
+                Name: { S: play.name },
+                description: { S: play.description },
+                Status: { S: play.status },
+                ExhibitionDate: { S: play.exhibitionDates[0] },
+                imageURL: { S: play.imageURL },
+                createdAt: { S: play.createdAt },
+            },
+        };
+
+        try {
+            const command = new PutItemCommand(params);
+            await dynamoDbClient.send(command);
+            return play;
+        } catch (error) {
+            console.error('Error saving play to DynamoDB', error);
+            throw new Error('Could not save play');
+        }
+    }
 }

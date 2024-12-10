@@ -101,14 +101,14 @@ function getHourAndMinutePart(isoString: string) {
   return isoString.split('T')[1].substring(0, 5);
 }
 
-function parseReservationTimes(isoDates: string[]) {
-  const horarios: ExhibitionDate[] = [];
+function convertToExibitionDate(isoDates: string[]) {
+  const dateTimes: ExhibitionDate[] = [];
   isoDates.forEach((isoString) => {
     const datePart = getDatePart(isoString);
     const timePart = getHourAndMinutePart(isoString);
-    horarios.push({ date: datePart, time: timePart, id: uuid() });
+    dateTimes.push({ date: datePart, time: timePart, id: uuid() });
   })
-  return horarios;
+  return dateTimes;
 }
 
 export default function PlayPage({ params }: { params: { id?: string[] } }) {
@@ -133,7 +133,7 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
         form.setValue('description', data.description ?? "")
         form.setValue('status', data.status ?? "")
         setPlay(data)
-        setHorarios(parseReservationTimes(data.exhibitionDates))
+        setHorarios(convertToExibitionDate(data.exhibitionDates))
       };
 
       fetchItems(id[0]);
@@ -149,10 +149,34 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
     setHorarios(updatedItems)
   }
 
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    const play: Play = {
+      id: uuid(), // Generate a unique ID for the play
+      name: data.name,
+      description: data.description,
+      status: data.status,
+      exhibitionDates: [new Date().toISOString()], // Assuming this is part of your form schema
+      imageURL: data.image, // Assuming this is part of your form schema
+      createdAt: new Date().toISOString(), // Set the current date and time
+    };
+
+    fetch('/api/play', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(play),
+    })
+      .then(response => response.json())
+      .then(result => {
+        console.log('Success:', result);
+      })
+  }
+
   return (
     <div className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(() => { })}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid flex-1 auto-rows-max gap-4">
             <div className="flex items-center gap-4">
               <Button variant="outline" size="icon" className="h-7 w-7">

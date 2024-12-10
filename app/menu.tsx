@@ -37,7 +37,7 @@ import {
           <MenubarTrigger>Reservas</MenubarTrigger>
           <MenubarContent>
             <MenubarItem asChild>
-              <Link href="/dashboard/reservations">Ver reservas</Link>
+              <Link href="/dashboard/reservations">Gerenciar reservas</Link>
             </MenubarItem>
           </MenubarContent>
         </MenubarMenu>

@@ -8,14 +8,14 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import { AlbumArtwork } from "./components/album-artwork"
+import { AlbumArtwork } from "./album-artwork"
 import { Input } from "@/components/ui/input"
 import { useState, useEffect } from 'react'
-import { CalendarDateRangePicker } from "./components/date-range-picker"
+import { CalendarDateRangePicker } from "./date-range-picker"
 import { addDays } from "date-fns"
 import { DateRange } from "react-day-picker"
 import { Play } from "../../domain/play"
-import { PaginationComponent } from "./components/pagination"
+import { PaginationComponent } from "./pagination"
 
 export default function LandingPage() {
 

@@ -1,4 +1,5 @@
-import { PlayRepository } from '@/app/repository/playRepository';
+import { Play } from '@/domain/play';
+import { PlayRepository } from '@/repository/playRepository';
 import { NextResponse, NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -15,4 +16,17 @@ export async function GET(request: NextRequest) {
     }
 
     return NextResponse.json(plays);
+}
+
+
+export async function POST(request: NextRequest) {
+    const playRepository = new PlayRepository();
+    const play: Play = await request.json();
+
+    try {
+        await playRepository.createPlay(play);
+        return NextResponse.json({ message: 'Play created successfully' }, { status: 201 });
+    } catch (error) {
+        return NextResponse.json({ message: 'Error creating play', error: error }, { status: 500 });
+    }
 }

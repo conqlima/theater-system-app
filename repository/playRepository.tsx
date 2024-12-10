@@ -2,17 +2,13 @@ import { Play } from "@/domain/play";
 import { IPlayRepository } from "./interfaces/IPlayRepository";
 import { LoremIpsum } from "lorem-ipsum";
 import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
-import { fromIni } from "@aws-sdk/credential-providers";
+import { fromIni, fromEnv } from "@aws-sdk/credential-providers";
 
 
 // Configure AWS SDK
 const dynamoDbClient = new DynamoDBClient({
     region: 'sa-east-1', // Replace with your region
-    credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
-        sessionToken: process.env.AWS_SESSION_TOKEN!,
-    },
+    credentials: fromEnv(),
     // credentials: fromIni({ profile: 'personal' }), // Replace 'personal' with your profile name
 });
 

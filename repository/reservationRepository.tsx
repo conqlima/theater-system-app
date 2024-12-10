@@ -1,5 +1,5 @@
-import { Reservation } from "../../domain/reservation";
-import { IReservationRepository } from "../interfaces/IReservationRepository";
+import { Reservation } from "@/domain/reservation";
+import { IReservationRepository } from "./interfaces/IReservationRepository";
 import { v4 as uuid } from 'uuid'
 
 const items: Reservation[] = [

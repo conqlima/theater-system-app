@@ -3,6 +3,7 @@ import { IPlayRepository } from "./interfaces/IPlayRepository";
 import { LoremIpsum } from "lorem-ipsum";
 import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
 import { fromIni, fromEnv } from "@aws-sdk/credential-providers";
+import '@/envConfig.ts'
 
 
 // Configure AWS SDK

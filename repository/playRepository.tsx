@@ -8,6 +8,11 @@ import { fromIni } from "@aws-sdk/credential-providers";
 // Configure AWS SDK
 const dynamoDbClient = new DynamoDBClient({
     region: 'sa-east-1', // Replace with your region
+    credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+        sessionToken: process.env.AWS_SESSION_TOKEN!,
+    },
     // credentials: fromIni({ profile: 'personal' }), // Replace 'personal' with your profile name
 });
 

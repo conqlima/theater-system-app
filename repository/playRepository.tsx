@@ -79,6 +79,7 @@ export class PlayRepository implements IPlayRepository {
     }
 
     async createPlay(play: Play): Promise<Play> {
+        console.log(process.env.ACCESS_KEY_ID)
         const params = {
             TableName: this.tableName,
             Item: {

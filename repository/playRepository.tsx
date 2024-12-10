@@ -80,7 +80,7 @@ export class PlayRepository implements IPlayRepository {
     }
 
     async createPlay(play: Play): Promise<Play> {
-        console.log(process.env.REACT_APP_ACCESS_KEY_ID)
+        console.log(process.env.AUTH0_SECRET)
         const params = {
             TableName: this.tableName,
             Item: {

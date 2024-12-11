@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const page = searchParams.get('page')
     const playRepository = new PlayRepository();
     let plays;
-    
+
     if (page) {
         plays = await playRepository.getAllPlaysPaginated(parseInt(page as string) || 1);
     }
@@ -21,12 +21,13 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     const playRepository = new PlayRepository();
-    const play: Play = await request.json();
+    const data = await request.json();
 
-    try {
-        await playRepository.createPlay(play);
-        return NextResponse.json({ message: 'Play created successfully' }, { status: 201 });
-    } catch (error) {
-        return NextResponse.json({ message: 'Error creating play', error: error }, { status: 500 });
+    if (Array.isArray(data)) {
+        await playRepository.createBatchPlay(data as Play[]);
     }
+    else {
+        await playRepository.createPlay(data as Play);
+    }
+    return NextResponse.json({ message: 'Play created successfully' }, { status: 201 });
 }

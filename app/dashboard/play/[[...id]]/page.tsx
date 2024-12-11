@@ -54,7 +54,7 @@ import { z } from 'zod'
 import { cn } from "@/lib/utils"
 import { Calendar } from "@/components/ui/calendar"
 import { CalendarIcon, PlusCircle, MoreHorizontal, ChevronLeft } from "lucide-react"
-import { format } from "date-fns"
+import { parse, format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { useState, useEffect } from "react"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -111,6 +111,17 @@ function convertToExibitionDate(isoDates: string[]) {
   return dateTimes;
 }
 
+function convertToISOString(date: string, time: string): string {
+  // Combine date and time into a single string
+  const dateTimeString = `${date} ${time}`;
+  
+  // Parse the combined string into a Date object
+  const parsedDate = parse(dateTimeString, 'dd/MM/yyyy HH:mm', new Date());
+  
+  // Format the Date object into an ISO string
+  return format(parsedDate, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+}
+
 export default function PlayPage({ params }: { params: { id?: string[] } }) {
 
   const [play, setPlay] = useState<Play>();
@@ -150,14 +161,16 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
   }
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+
+    // save the play information without the exibition date and time
     const play: Play = {
-      id: uuid(), // Generate a unique ID for the play
+      id: uuid(),
       name: data.name,
       description: data.description,
       status: data.status,
-      exhibitionDates: [new Date().toISOString()], // Assuming this is part of your form schema
-      imageURL: data.image, // Assuming this is part of your form schema
-      createdAt: new Date().toISOString(), // Set the current date and time
+      exhibitionDates: ['#'],
+      imageURL: data.image,
+      createdAt: new Date().toISOString(),
     };
 
     fetch('/api/play', {
@@ -166,6 +179,29 @@ export default function PlayPage({ params }: { params: { id?: string[] } }) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(play),
+    })
+      .then(response => response.json())
+      .then(result => {
+        console.log('Success:', result);
+      })
+
+    // save each play with only its respective exibition date and time
+    const plays: Play[] = horarios.map((item) => ({
+      id: play.id,
+      exhibitionDates: [convertToISOString(item.date, item.time)],
+      name: play.name,
+      description: play.description,
+      status: play.status,
+      imageURL: play.imageURL,
+      createdAt: play.createdAt,
+    }));
+
+    fetch('/api/play', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(plays),
     })
       .then(response => response.json())
       .then(result => {

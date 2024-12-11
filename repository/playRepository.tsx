@@ -1,20 +1,18 @@
 import { Play } from "@/domain/play";
 import { IPlayRepository } from "./interfaces/IPlayRepository";
 import { LoremIpsum } from "lorem-ipsum";
-import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
-import { fromIni, fromEnv } from "@aws-sdk/credential-providers";
-import '@/envConfig.ts'
+import { DynamoDBClient, PutItemCommand, BatchWriteItemCommand } from "@aws-sdk/client-dynamodb";
+import { fromIni } from "@aws-sdk/credential-providers";
+// import '@/envConfig.ts'
 
 
-// Configure AWS SDK
 const dynamoDbClient = new DynamoDBClient({
     region: 'sa-east-1',
-    credentials: {
-        accessKeyId: process.env.REACT_APP_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY!,
-    },
-    // credentials: fromEnv(),
-    // credentials: fromIni({ profile: 'personal' }),
+    // credentials: {
+    //     accessKeyId: process.env.REACT_APP_ACCESS_KEY_ID!,
+    //     secretAccessKey: process.env.REACT_APP_SECRET_ACCESS_KEY!,
+    // },
+    credentials: fromIni({ profile: 'personal' }),
 });
 
 const lorem = new LoremIpsum();
@@ -101,6 +99,32 @@ export class PlayRepository implements IPlayRepository {
         } catch (error) {
             console.error('Error saving play to DynamoDB', error);
             throw new Error('Could not save play');
+        }
+    }
+
+    async createBatchPlay(plays: Play[]): Promise<void> {
+        const putRequests = plays.map(play => ({
+            PutRequest: {
+                TableName: this.tableName,
+                Item: {
+                    PlayID: { S: play.id },
+                    ExhibitionDate: { S: play.exhibitionDates[0] },
+                },
+            },
+        }));
+
+        const params = {
+            RequestItems: {
+                [this.tableName]: putRequests,
+            },
+        };
+
+        try {
+            const command = new BatchWriteItemCommand(params);
+            await dynamoDbClient.send(command);
+        } catch (error) {
+            console.error('Error saving batch plays to DynamoDB', error);
+            throw new Error('Could not save batch plays');
         }
     }
 }
